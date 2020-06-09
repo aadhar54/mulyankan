@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Sidebar = ({ scale, setScale, title }) => {
+const Sidebar = ({ scale, setScale, title, setDownload }) => {
   const dragStart = (e) => {
     e.dataTransfer.setData('id', `#${e.target.id}`);
   };
@@ -29,12 +29,31 @@ const Sidebar = ({ scale, setScale, title }) => {
         <img
           onDragStart={dragStart}
           id="wrong"
-          src="./images/wrong.jpg"
+          src="./images/wrong.png"
           className="image-icon"
           alt="Correct Mark"
           draggable="true"
         />
       </div>
+      <div className="icons-grid">
+        <img
+          onDragStart={dragStart}
+          id="underline"
+          src="./images/underline.png"
+          className="image-icon"
+          alt="Correct Mark"
+          draggable="true"
+        />
+        <img
+          onDragStart={dragStart}
+          id="circle"
+          src="./images/circle.png"
+          className="image-icon"
+          alt="Correct Mark"
+          draggable="true"
+        />
+      </div>
+      <button style={{ fontSize: '2rem' }}>Download</button>
     </div>
   );
 };
