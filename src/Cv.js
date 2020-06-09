@@ -3,7 +3,8 @@ const fabric = require('fabric').fabric;
 
 const Cv = ({ pdf, pg }) => {
   const init = async () => {
-    const canvas = document.getElementById();
+    const canvas = document.querySelector(`#page-${pg}`);
+    console.log(document.querySelector('.canvas-container'));
     const canvasContext = canvas.getContext('2d');
     pdf.getPage(pg).then((page) => {
       const viewport = page.viewport({ scale: 1 });
@@ -18,11 +19,7 @@ const Cv = ({ pdf, pg }) => {
   };
   init();
 
-  return (
-    <div className="canvas-container">
-      <canvas className={`page-${pg}`} id={`page-${pg}`}></canvas>
-    </div>
-  );
+  return <canvas className={`page-${pg}`} id={`page-${pg}`}></canvas>;
 };
 
 export default Cv;
