@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 const fabric = require('fabric').fabric;
 
-const Canvas = ({ pdf, pg, scale, setFcanvas }) => {
+const Canvas = ({ pdf, pg, setFcanvas }) => {
   let viewport, canvas, ctx, fcanvas, downloadCanvas;
 
   const getPageAndRender = async () => {
@@ -22,17 +22,9 @@ const Canvas = ({ pdf, pg, scale, setFcanvas }) => {
       fcanvas.setBackgroundImage(bg, fcanvas.renderAll.bind(fcanvas));
       fcanvas.setHeight(viewport.height);
       fcanvas.setWidth(viewport.width);
-
-      // fcanvas.on('mouse:wheel', (opt) => {
-      //   let delta = opt.e.deltaY;
-      //   let zoom = fcanvas.getZoom();
-      //   zoom *= 0.999 ** zoom;
-      //   if (zoom > 20) zoom = 20;
-      //   if (zoom < 0.01) zoom = 0.01;
-      //   fcanvas.setZoom(zoom);
-      //   opt.e.preventDefault();
-      //   opt.e.stopPropagation();
-      // });
+      let gdu = () => {
+        return fcanvas.toDataURL();
+      };
     });
 
     document
@@ -56,13 +48,6 @@ const Canvas = ({ pdf, pg, scale, setFcanvas }) => {
 
   return (
     <div id="canvas-container" className={`canvas-container-${pg}`}>
-      <button
-        style={{ fontSize: '2rem' }}
-        onClick={() => downloadCanvas()}
-        className="download"
-      >
-        Download
-      </button>
       <canvas
         style={{ display: 'none' }}
         id={`page-${pg}`}
