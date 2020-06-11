@@ -1,10 +1,4 @@
 @font-face {
-  font-family: 'Material Icons';
-  font-style: normal;
-  font-weight: 400;
-  src: url(./fonts/material-icons.ttf) format('truetype');
-}
-@font-face {
   font-family: 'Montserrat';
   font-style: normal;
   font-weight: 600;
@@ -15,33 +9,10 @@
 @font-face {
   font-family: 'Montserrat';
   font-style: normal;
-  font-weight: 100;
-  src: local('Montserrat Thin'), local('Montserrat-Thin'),
-    url(./fonts/montserrat-thin.ttf) format('truetype');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: normal;
   font-weight: 300;
   src: local('Montserrat Light'), local('Montserrat-Light'),
     url(./fonts/montserrat-light.ttf) format('truetype');
 }
-@font-face {
-  font-family: 'Montserrat';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Montserrat Regular'), local('Montserrat-Regular'),
-    url(./fonts/montserrat.ttf) format('truetype');
-}
-
-@font-face {
-  font-family: 'Montserrat';
-  font-style: normal;
-  font-weight: 700;
-  src: local('Montserrat Bold'), local('Montserrat-Bold'),
-    url(./fonts/montserrat-bold.ttf) format('truetype');
-}
-
 button {
   outline: 0px transparent !important;
   transition: all 0.2s ease-out;
@@ -457,7 +428,7 @@ div[class^='canvas-container-'] {
 .welcome-screen {
   width: 100vw;
   height: 100vh;
-  background-image: url(./bg3.png);
+  background-image: url(./bg.png);
   background-repeat: no-repeat;
   background-size: cover;
   display: grid;
