@@ -29,47 +29,61 @@ const SelectPDF = ({ setPdf }) => {
   };
 
   return (
-    <div className="select-pdf">
-      <input
-        id="file-input"
-        style={{ display: 'none' }}
-        type="file"
-        onChange={(e) => prepareFile(e.target.files[0])}
-      />
-      <button
-        className="upload-pdf"
+    <div className="welcome-screen">
+      <div className="title">
+        <span className="title-main">mulyankan.</span>
+        <span className="title-sub1">Checking exams made easy.</span>
+        <span className="title-sub2">Drag. Drop. Download. Done.</span>
+      </div>
+      <div
+        className="select-pdf"
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => {
           e.preventDefault();
           prepareFile(e.dataTransfer.files[0]);
         }}
-        onClick={() => document.querySelector('#file-input').click()}
       >
-        Drag PDF here or Click to select
-      </button>
-      {file ? (
-        <div>
-          <div className="filename-wrapper">
-            <p className="filename selected-file">Selected File:</p>
-            <p className="filename">{file ? file.name : null}</p>
-          </div>
-          <div className="proceed-wrapper">
-            <div className="proceed-btn">
-              <input type="checkbox" id="check" />
-              <label
-                onClick={() => {
-                  proceed();
-                }}
-                htmlFor="check"
-                className="btn-label"
-              >
-                <span className="load open"></span>
-                <p className="btn-text">Proceed</p>
-              </label>
+        <input
+          id="file-input"
+          style={{ display: 'none' }}
+          type="file"
+          onChange={(e) => prepareFile(e.target.files[0])}
+        />
+        <button
+          className="upload-pdf"
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            prepareFile(e.dataTransfer.files[0]);
+          }}
+          onClick={() => document.querySelector('#file-input').click()}
+        >
+          Drag PDF here or Click to select
+        </button>
+        {file ? (
+          <div>
+            <div className="filename-wrapper">
+              <p className="filename selected-file">Selected File:</p>
+              <p className="filename">{file ? file.name : null}</p>
+            </div>
+            <div className="proceed-wrapper">
+              <div className="proceed-btn">
+                <input type="checkbox" id="check" />
+                <label
+                  onClick={() => {
+                    proceed();
+                  }}
+                  htmlFor="check"
+                  className="btn-label"
+                >
+                  <span className="load open"></span>
+                  <p className="btn-text">Proceed</p>
+                </label>
+              </div>
             </div>
           </div>
-        </div>
-      ) : null}
+        ) : null}
+      </div>
     </div>
   );
 };

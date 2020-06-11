@@ -59,34 +59,37 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
         });
 
       fabric.util.addListener(document.body, 'keydown', (options) => {
-        options.preventDefault();
         if (
           options.keyCode === 37 ||
           options.keyCode === 38 ||
           options.keyCode === 39 ||
           options.keyCode === 40
         ) {
-          if (fcanvas._activeObject) {
+          if (fcanvas._activeObject && !fcanvas._activeObject.isEditing) {
             let keyCode = options.keyCode;
             if (keyCode === 38) {
+              options.preventDefault();
               let top = fcanvas._activeObject.top;
               fcanvas._activeObject.top = top - 2;
               fcanvas._activeObject.setCoords();
               fcanvas.renderAll();
             }
             if (keyCode === 40) {
+              options.preventDefault();
               let top = fcanvas._activeObject.top;
               fcanvas._activeObject.top = top + 2;
               fcanvas._activeObject.setCoords();
               fcanvas.renderAll();
             }
             if (keyCode === 37) {
+              options.preventDefault();
               let left = fcanvas._activeObject.left;
               fcanvas._activeObject.left = left - 2;
               fcanvas._activeObject.setCoords();
               fcanvas.renderAll();
             }
             if (keyCode === 39) {
+              options.preventDefault();
               let left = fcanvas._activeObject.left;
               fcanvas._activeObject.left = left + 2;
               fcanvas._activeObject.setCoords();
@@ -111,8 +114,6 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
         let id = e.dataTransfer.getData('id');
         if (id === '#text') {
           let text = new fabric.Textbox('Enter text here', {
-            width: 300,
-            height: 100,
             left: mouseCoords.x,
             top: mouseCoords.y,
             fill: '#ff4757',
