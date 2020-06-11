@@ -114,8 +114,9 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
         let id = e.dataTransfer.getData('id');
         if (id === '#text') {
           let text = new fabric.Textbox('Enter text here', {
-            left: mouseCoords.x,
-            top: mouseCoords.y,
+            width: 300,
+            height: 50,
+
             fill: '#ff4757',
             fontFamily: 'sans-serif',
             transparentCorners: false,
@@ -123,7 +124,12 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
             cornerSize: 7,
           });
 
-          text.set({ fill: '#ff4757', fontFamily: 'sans-serif' });
+          text.set({
+            fill: '#ff4757',
+            fontFamily: 'sans-serif',
+            top: mouseCoords.y - text.get('height') / 2,
+            left: mouseCoords.x - text.get('width') / 2,
+          });
           fcanvas.on('before:selection:cleared', (obj) => {
             document.querySelector('.bold').style.backgroundColor = '#eee';
             document.querySelector('.italic').style.backgroundColor = '#eee';
@@ -151,14 +157,17 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
         } else {
           let imgEl = document.querySelector(id);
           let img = new fabric.Image(imgEl, {
-            left: mouseCoords.x,
-            top: mouseCoords.y,
             transparentCorners: false,
             cornerColor: '#0984e3',
             cornerSize: 7,
           });
-          img.scaleToWidth(50);
-          img.scaleToHeight(50);
+          let scaleValue = 50;
+          img.scaleToWidth(scaleValue);
+          img.scaleToHeight(scaleValue);
+          img.set({
+            top: mouseCoords.y - scaleValue / 2,
+            left: mouseCoords.x - scaleValue / 2,
+          });
 
           fcanvas.on('object:modified', (obj) => {
             let target = obj.target;
