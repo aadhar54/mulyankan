@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CirclePicker } from 'react-color';
+import Lazyload from 'react-lazy-load';
 
 const Sidebar = ({ title, logURLs, setZoom, editText }) => {
   const dragStart = (e) => {
@@ -27,40 +28,49 @@ const Sidebar = ({ title, logURLs, setZoom, editText }) => {
       <hr className="divider" />
       <div className="sidebar-title sidebar-sub">Corrections</div>
       <div className="icons-grid">
-        <img
-          onDragStart={dragStart}
-          id="tick"
-          src="./images/tick.png"
-          className="image-icon"
-          alt="Correct Mark"
-          draggable="true"
-        />
-        <img
-          onDragStart={dragStart}
-          id="wrong"
-          src="./images/wrong.png"
-          className="image-icon"
-          alt="Correct Mark"
-          draggable="true"
-        />
+        <Lazyload>
+          <img
+            onDragStart={dragStart}
+            id="tick"
+            src="./images/tick.png"
+            className="image-icon"
+            alt="Correct Mark"
+            draggable="true"
+          />
+        </Lazyload>
+        <Lazyload>
+          <img
+            onDragStart={dragStart}
+            id="wrong"
+            src="./images/wrong.png"
+            className="image-icon"
+            alt="Correct Mark"
+            draggable="true"
+          />
+        </Lazyload>
       </div>
       <div className="icons-grid">
-        <img
-          onDragStart={dragStart}
-          id="underline"
-          src="./images/underline.png"
-          className="image-icon"
-          alt="Correct Mark"
-          draggable="true"
-        />
-        <img
-          onDragStart={dragStart}
-          id="circle"
-          src="./images/circle.png"
-          className="image-icon"
-          alt="Correct Mark"
-          draggable="true"
-        />
+        <Lazyload>
+          <img
+            onDragStart={dragStart}
+            id="underline"
+            src="./images/underline.png"
+            className="image-icon"
+            alt="Correct Mark"
+            draggable="true"
+          />
+        </Lazyload>
+
+        <Lazyload>
+          <img
+            onDragStart={dragStart}
+            id="circle"
+            src="./images/circle.png"
+            className="image-icon"
+            alt="Correct Mark"
+            draggable="true"
+          />
+        </Lazyload>
       </div>
       <hr className="divider" />
       <div className="sidebar-title sidebar-sub">Text</div>
@@ -73,13 +83,15 @@ const Sidebar = ({ title, logURLs, setZoom, editText }) => {
         <p onDragStart={dragStart} id="text">
           Drag onto page to add text box
         </p>
-        <img
-          onDragStart={dragStart}
-          id="text"
-          className="image-icon"
-          src="./images/text.png"
-          alt="Textbox"
-        />
+        <Lazyload>
+          <img
+            onDragStart={dragStart}
+            id="text"
+            className="image-icon"
+            src="./images/text.png"
+            alt="Textbox"
+          />
+        </Lazyload>
       </div>
       <div className="buttons-grid">
         <button

@@ -132,6 +132,7 @@ div[class^='canvas-container-'] {
   grid-template-columns: 1fr 1fr;
   width: 90%;
   margin: 0 auto;
+  text-align: center;
 }
 
 .image-icon {
@@ -141,6 +142,7 @@ div[class^='canvas-container-'] {
   padding: 1rem 3rem;
   border-radius: 5px;
   cursor: pointer;
+  display: inline-block;
 }
 
 .preloader {

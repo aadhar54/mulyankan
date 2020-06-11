@@ -263,15 +263,10 @@ export class App extends Component {
       });
       let objects = fc.getObjects();
       objects.forEach((object) => {
-        let scaleX = object.scaleX;
-        let scaleY = object.scaleY;
-        let top = object.top;
-        let left = object.left;
-
-        object.scaleX = scaleX * factor;
-        object.scaleY = scaleY * factor;
-        object.top = top * factor;
-        object.left = left * factor;
+        object.scaleX *= factor;
+        object.scaleY *= factor;
+        object.top *= factor;
+        object.left *= factor;
 
         object.setCoords();
         fc.renderAll();
