@@ -82,13 +82,22 @@ const Sidebar = ({ title, logURLs, setZoom, editText }) => {
         />
       </div>
       <div className="buttons-grid">
-        <button className="btn" onClick={() => editText('fontWeight', 'bold')}>
+        <button
+          className="btn bold"
+          onClick={() => editText('fontWeight', 'bold')}
+        >
           <i className="material-icons">format_bold</i>
         </button>
-        <button className="btn" onClick={() => editText('fontStyle', 'italic')}>
+        <button
+          className="btn italic"
+          onClick={() => editText('fontStyle', 'italic')}
+        >
           <i className="material-icons">format_italic</i>
         </button>
-        <button className="btn" onClick={() => editText('underline', 'true')}>
+        <button
+          className="btn underline"
+          onClick={() => editText('underline', 'true')}
+        >
           <i className="material-icons">format_underlined</i>
         </button>
       </div>

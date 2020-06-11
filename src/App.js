@@ -58,11 +58,6 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
           console.log(e.keyCode);
         });
 
-      keyDown = (e) => {
-        e.preventDefault();
-        console.log(e.keyCode);
-      };
-
       fabric.util.addListener(document.body, 'keydown', (options) => {
         options.preventDefault();
         if (fcanvas._activeObject) {
@@ -90,6 +85,14 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
         }
       });
 
+      // fcanvas.on('object:selected', (obj) => {
+      //   let target = obj.target;
+      //   if (target.text) {
+      //     console.log('ok');
+      //     console.log(target.get('fontWeight'));
+      //   }
+      // });
+
       fcanvas.zoom = 1;
       fcArray.push(fcanvas);
     });
@@ -115,6 +118,34 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
           });
 
           text.set({ fill: '#ff4757', fontFamily: 'sans-serif' });
+          // text.on('deselected', (obj) => {
+          //   let target = obj.deselected[0];
+          //   console.log(target);
+          //   let sorted = Object.keys(obj).sort();
+          // });
+          fcanvas.on('before:selection:cleared', (obj) => {
+            document.querySelector('.bold').style.backgroundColor = '#eee';
+            document.querySelector('.italic').style.backgroundColor = '#eee';
+            document.querySelector('.underline').style.backgroundColor = '#eee';
+          });
+
+          fcanvas.on('object:selected', (obj) => {
+            let target = obj.target;
+            if (target.text) {
+              if (target.get('fontWeight') === 'bold') {
+                document.querySelector('.bold').style.backgroundColor = '#ccc';
+              }
+              if (target.get('fontStyle') === 'italic') {
+                document.querySelector('.italic').style.backgroundColor =
+                  '#ccc';
+              }
+              if (target.get('underline') === 'underline') {
+                document.querySelector('.underline').style.backgroundColor =
+                  '#ccc';
+              }
+            }
+          });
+
           fcanvas.add(text);
         } else {
           let imgEl = document.querySelector(id);
@@ -125,6 +156,8 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
             cornerColor: '#0984e3',
             cornerSize: 7,
           });
+          img.scaleToWidth(50);
+          img.scaleToHeight(50);
           fcanvas.add(img);
         }
       });
@@ -170,18 +203,36 @@ export class App extends Component {
           switch (param) {
             case 'underline':
               fc._activeObject.set(param, '');
+              document.querySelector('.underline').style.backgroundColor =
+                '#eee';
               break;
             case 'fontWeight':
               fc._activeObject.set(param, 'normal');
+              document.querySelector('.bold').style.backgroundColor = '#eee';
               break;
             case 'fontStyle':
               fc._activeObject.set(param, 'normal');
+              document.querySelector('.italic').style.backgroundColor = '#eee';
               break;
             default:
               return;
           }
         } else {
           fc._activeObject.set(param, value);
+          switch (param) {
+            case 'underline':
+              document.querySelector('.underline').style.backgroundColor =
+                '#ccc';
+              break;
+            case 'fontWeight':
+              document.querySelector('.bold').style.backgroundColor = '#ccc';
+              break;
+            case 'fontStyle':
+              document.querySelector('.italic').style.backgroundColor = '#ccc';
+              break;
+            default:
+              return;
+          }
         }
         fc.renderAll();
       }
