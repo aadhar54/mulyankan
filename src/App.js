@@ -7,7 +7,7 @@ const fabric = require('fabric').fabric;
 const fcArray = [];
 
 const Cv = ({ pdf, pg, setFcanvas }) => {
-  let viewport, canvas, ctx, fcanvas, keyDown;
+  let viewport, canvas, ctx, fcanvas;
 
   const getPageAndRender = async () => {
     const page = await pdf.getPage(pg);
@@ -60,38 +60,41 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
 
       fabric.util.addListener(document.body, 'keydown', (options) => {
         options.preventDefault();
-        if (fcanvas._activeObject) {
-          let keyCode = options.keyCode;
-          if (keyCode === 38) {
-            let top = fcanvas._activeObject.top;
-            fcanvas._activeObject.top = top - 2;
-            fcanvas.renderAll();
-          }
-          if (keyCode === 40) {
-            let top = fcanvas._activeObject.top;
-            fcanvas._activeObject.top = top + 2;
-            fcanvas.renderAll();
-          }
-          if (keyCode === 37) {
-            let left = fcanvas._activeObject.left;
-            fcanvas._activeObject.left = left - 2;
-            fcanvas.renderAll();
-          }
-          if (keyCode === 39) {
-            let left = fcanvas._activeObject.left;
-            fcanvas._activeObject.left = left + 2;
-            fcanvas.renderAll();
+        if (
+          options.keyCode === 37 ||
+          options.keyCode === 38 ||
+          options.keyCode === 39 ||
+          options.keyCode === 40
+        ) {
+          if (fcanvas._activeObject) {
+            let keyCode = options.keyCode;
+            if (keyCode === 38) {
+              let top = fcanvas._activeObject.top;
+              fcanvas._activeObject.top = top - 2;
+              fcanvas._activeObject.setCoords();
+              fcanvas.renderAll();
+            }
+            if (keyCode === 40) {
+              let top = fcanvas._activeObject.top;
+              fcanvas._activeObject.top = top + 2;
+              fcanvas._activeObject.setCoords();
+              fcanvas.renderAll();
+            }
+            if (keyCode === 37) {
+              let left = fcanvas._activeObject.left;
+              fcanvas._activeObject.left = left - 2;
+              fcanvas._activeObject.setCoords();
+              fcanvas.renderAll();
+            }
+            if (keyCode === 39) {
+              let left = fcanvas._activeObject.left;
+              fcanvas._activeObject.left = left + 2;
+              fcanvas._activeObject.setCoords();
+              fcanvas.renderAll();
+            }
           }
         }
       });
-
-      // fcanvas.on('object:selected', (obj) => {
-      //   let target = obj.target;
-      //   if (target.text) {
-      //     console.log('ok');
-      //     console.log(target.get('fontWeight'));
-      //   }
-      // });
 
       fcanvas.zoom = 1;
       fcArray.push(fcanvas);
@@ -108,6 +111,8 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
         let id = e.dataTransfer.getData('id');
         if (id === '#text') {
           let text = new fabric.Textbox('Enter text here', {
+            width: 300,
+            height: 100,
             left: mouseCoords.x,
             top: mouseCoords.y,
             fill: '#ff4757',
@@ -118,11 +123,6 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
           });
 
           text.set({ fill: '#ff4757', fontFamily: 'sans-serif' });
-          // text.on('deselected', (obj) => {
-          //   let target = obj.deselected[0];
-          //   console.log(target);
-          //   let sorted = Object.keys(obj).sort();
-          // });
           fcanvas.on('before:selection:cleared', (obj) => {
             document.querySelector('.bold').style.backgroundColor = '#eee';
             document.querySelector('.italic').style.backgroundColor = '#eee';
@@ -139,7 +139,7 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
                 document.querySelector('.italic').style.backgroundColor =
                   '#ccc';
               }
-              if (target.get('underline') === 'underline') {
+              if (target.get('underline') === 'true') {
                 document.querySelector('.underline').style.backgroundColor =
                   '#ccc';
               }
@@ -158,6 +158,14 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
           });
           img.scaleToWidth(50);
           img.scaleToHeight(50);
+
+          fcanvas.on('object:modified', (obj) => {
+            let target = obj.target;
+            if (!target.isOnScreen()) {
+              fcanvas.remove(target);
+            }
+          });
+
           fcanvas.add(img);
         }
       });
@@ -203,15 +211,18 @@ export class App extends Component {
           switch (param) {
             case 'underline':
               fc._activeObject.set(param, '');
+              fc.renderAll();
               document.querySelector('.underline').style.backgroundColor =
                 '#eee';
               break;
             case 'fontWeight':
               fc._activeObject.set(param, 'normal');
+              fc.renderAll();
               document.querySelector('.bold').style.backgroundColor = '#eee';
               break;
             case 'fontStyle':
               fc._activeObject.set(param, 'normal');
+              fc.renderAll();
               document.querySelector('.italic').style.backgroundColor = '#eee';
               break;
             default:
@@ -219,6 +230,7 @@ export class App extends Component {
           }
         } else {
           fc._activeObject.set(param, value);
+          fc.renderAll();
           switch (param) {
             case 'underline':
               document.querySelector('.underline').style.backgroundColor =
@@ -234,7 +246,6 @@ export class App extends Component {
               return;
           }
         }
-        fc.renderAll();
       }
     });
   };

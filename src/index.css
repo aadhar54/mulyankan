@@ -5,6 +5,20 @@
   src: url(./material-icons.ttf) format('truetype');
 }
 
+button {
+  outline: 0px transparent !important;
+  transition: all 0.2s ease-out;
+}
+
+button:focus {
+  outline: 0px transparent !important;
+}
+
+button:active {
+  background-color: #ccc;
+  transform: translateY(2px);
+}
+
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
