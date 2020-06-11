@@ -1,4 +1,10 @@
 @font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(./fonts/material-icons.ttf) format('truetype');
+}
+@font-face {
   font-family: 'Montserrat';
   font-style: normal;
   font-weight: 600;
@@ -13,6 +19,7 @@
   src: local('Montserrat Light'), local('Montserrat-Light'),
     url(./fonts/montserrat-light.ttf) format('truetype');
 }
+
 button {
   outline: 0px transparent !important;
   transition: all 0.2s ease-out;
