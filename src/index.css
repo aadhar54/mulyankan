@@ -351,7 +351,7 @@ div[class^='canvas-container-'] {
 .divider {
   border: solid #ccc 1px;
   width: 90%;
-  margin: 1.7rem auto;
+  margin: 1.4rem auto;
 }
 
 .sidebar-sub {
@@ -472,4 +472,13 @@ div[class^='canvas-container-'] {
   margin-bottom: 1rem;
   text-align: left;
   margin-bottom: 1rem;
+}
+
+.copyright {
+  color: #636e72;
+  font-size: 2rem;
+  font-weight: bold;
+  width: 90%;
+  text-align: justify;
+  margin: 2rem auto;
 }

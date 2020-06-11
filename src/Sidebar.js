@@ -149,6 +149,12 @@ const Sidebar = ({ title, logURLs, setZoom, editText }) => {
           Download
         </button>
       </div>
+      <div className="copyright">
+        <div className="copyright-1">Made with ❤️ by Soham Karandikar.</div>
+        <div className="copyright-2">
+          &copy; 2020 by Soham Karandikar. All rights reserved.
+        </div>
+      </div>
     </div>
   );
 };
