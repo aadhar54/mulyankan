@@ -10,7 +10,7 @@ const Sidebar = ({ title, logURLs, setZoom, editText }) => {
   const [error, setError] = useState(false);
 
   return (
-    <div className="sidebar">
+    <div className="sidebar" id="sidebar">
       <div className="sidebar-title">{title}</div>
       <hr className="divider" />
       <div className="sidebar-title sidebar-sub">Zooming</div>
