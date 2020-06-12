@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import SelectPDF from './SelectPDF';
 import Sidebar from './Sidebar';
 import jspdf from 'jspdf';
+import Menu from './Menu';
+
 const fabric = require('fabric').fabric;
 
 const fcArray = [];
@@ -25,6 +27,10 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
     task.promise.then(() => {
       const bg = canvas.toDataURL();
       fcanvas = new fabric.Canvas(`fabric-${pg}`);
+      fcanvas.set({
+        stopContextMenu: true,
+        fireRightClick: true,
+      });
       fcanvas.setHeight(viewport.height);
       fcanvas.setWidth(viewport.width);
       fabric.Image.fromURL(
@@ -113,11 +119,12 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
 
         let id = e.dataTransfer.getData('id');
         if (id === '#text') {
-          let text = new fabric.Textbox('Enter text here', {
-            width: 300,
-            height: 50,
-
+          let text = new fabric.Textbox('Text', {
+            width: 30,
+            height: 30,
+            fontSize: 40,
             fill: '#ff4757',
+            fireRightClick: true,
             fontFamily: 'sans-serif',
             transparentCorners: false,
             cornerColor: '#0984e3',
@@ -130,6 +137,13 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
             top: mouseCoords.y - text.get('height') / 2,
             left: mouseCoords.x - text.get('width') / 2,
           });
+
+          text.on('mousedown', (e) => {
+            if (e.button === 3) {
+              console.log('right click');
+            }
+          });
+
           fcanvas.on('before:selection:cleared', (obj) => {
             document.querySelector('.bold').style.backgroundColor = '#eee';
             document.querySelector('.italic').style.backgroundColor = '#eee';
@@ -198,6 +212,7 @@ export class App extends Component {
       fcanvas: [],
       zoom: 1,
       download: true,
+      menuOpen: false,
     };
   }
 
@@ -314,21 +329,28 @@ export class App extends Component {
     });
   };
 
+  toggleMenu = () => {
+    this.setState({
+      menuOpen: !this.state.menuOpen,
+    });
+  };
+
   render() {
     return !this.state.pdf ? (
       <SelectPDF setPdf={this.setPdf} />
     ) : (
       <main>
-        <div className="main-container">
-          <Sidebar
-            addText={this.addText}
-            logURLs={this.logURLs}
-            title={this.state.pdf.name}
-            setZoom={this.setZoom}
-            editText={this.editText}
-            download={this.state.download}
-            setDownload={this.setDownload}
-          />
+        <Sidebar
+          addText={this.addText}
+          logURLs={this.logURLs}
+          title={this.state.pdf.name}
+          setZoom={this.setZoom}
+          editText={this.editText}
+          download={this.state.download}
+          setDownload={this.setDownload}
+        />
+        <div className="main-container" id="main-container">
+          <Menu setPdf={this.setPdf} />
           {this.state.pdf
             ? [...Array(this.state.pdf.data.numPages).keys()].map((pg) => (
                 <Cv

@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CirclePicker } from 'react-color';
 import Lazyload from 'react-lazy-load';
+import Slider from 'react-rangeslider';
+import 'react-rangeslider/lib/index.css';
 
 const Sidebar = ({ title, logURLs, setZoom, editText }) => {
   const dragStart = (e) => {
@@ -8,6 +10,11 @@ const Sidebar = ({ title, logURLs, setZoom, editText }) => {
   };
 
   const [error, setError] = useState(false);
+  const [sliderValue, setSliderVaue] = useState(40);
+
+  useEffect(() => {
+    editText('fontSize', sliderValue);
+  }, [sliderValue, editText]);
 
   return (
     <div className="sidebar" id="sidebar">
@@ -111,6 +118,30 @@ const Sidebar = ({ title, logURLs, setZoom, editText }) => {
           onClick={() => editText('underline', 'true')}
         >
           <i className="material-icons">format_underlined</i>
+        </button>
+      </div>
+      <div className="buttons-grid buttons-grid-fsize">
+        <button
+          className="btn italic"
+          onClick={() => setSliderVaue(sliderValue - 1)}
+        >
+          <i className="material-icons">remove</i>
+        </button>
+        <div className="slider-horizontal">
+          <Slider
+            min={0}
+            max={100}
+            value={sliderValue}
+            orientation="horizontal"
+            onChange={(v) => setSliderVaue(v)}
+          />
+        </div>
+
+        <button
+          className="btn bold"
+          onClick={() => setSliderVaue(sliderValue + 1)}
+        >
+          <i className="material-icons">add</i>
         </button>
       </div>
       <div className="text-color">
