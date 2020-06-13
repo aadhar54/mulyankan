@@ -207,22 +207,6 @@ const LoadJSON = ({ pdf, page, setFcanvas, editText }) => {
 
   const getPageAndRender = async () => {
     fcanvas = new fabric.Canvas(`fabric-${pg}`);
-    // fabric.util.enlivenObjects(pdf.data[page].objects, function (objs) {
-    //   objs.forEach((o, index) => {
-    //     if (index === 0) {
-    //       o.evented = false;
-    //       o.selectable = false;
-    //       o.hasBorders = false;
-    //       o.hasControls = false;
-    //       o.hasRotatingPoint = false;
-    //     }
-    //     o.transparentCorners = false;
-    //     o.cornerColor = '#0984e3';
-    //     o.cornerSize = 7;
-    //     fcanvas.add(o);
-    //   });
-    // });
-    // fcanvas.renderAll();
     console.log(document.querySelector(`.canvas-container-${pg}`));
     fcanvas.loadFromJSON(json, function () {
       fcanvas.setHeight(fcanvas._objects[0].height);
@@ -574,7 +558,7 @@ export class App extends Component {
   saveAsJSON = (filename) => {
     let saveData = {};
     fcArray.forEach((fc, index) => {
-      saveData[index] = fc.toDatalessObject();
+      saveData[index] = fc.toJSON();
     });
     let json = JSON.stringify(saveData);
     const el = document.createElement('a');
