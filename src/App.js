@@ -555,14 +555,15 @@ export class App extends Component {
   };
 
   saveAsJSON = (filename) => {
+    ``;
     let saveData = {};
     fcArray.forEach((fc, index) => {
       let json = fc.toJSON();
       saveData[index] = {
         json,
         dimensions: {
-          height: fc.getHeight(),
-          width: fc.getWidth(),
+          height: fc.originalDimensions.height,
+          width: fc.originalDimensions.width,
         },
       };
     });
