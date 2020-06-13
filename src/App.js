@@ -3,6 +3,7 @@ import SelectPDF from './SelectPDF';
 import Sidebar from './Sidebar';
 import jspdf from 'jspdf';
 import Menu from './Menu';
+import hotkeys from 'hotkeys-js';
 
 const fabric = require('fabric').fabric;
 
@@ -197,7 +198,7 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
   );
 };
 
-const LoadJSON = ({ pdf, page, setFcanvas }) => {
+const LoadJSON = ({ pdf, page, setFcanvas, editText }) => {
   let fcanvas, mouseCoords;
   let pg = page + 1;
   console.log(pg);
@@ -258,38 +259,88 @@ const LoadJSON = ({ pdf, page, setFcanvas }) => {
           options.keyCode === 37 ||
           options.keyCode === 38 ||
           options.keyCode === 39 ||
-          options.keyCode === 40
+          options.keyCode === 40 ||
+          options.keyCode === 66 ||
+          options.keyCode === 73 ||
+          options.keyCode === 85
         ) {
-          if (fcanvas._activeObject && !fcanvas._activeObject.isEditing) {
-            let keyCode = options.keyCode;
-            if (keyCode === 38) {
-              options.preventDefault();
-              let top = fcanvas._activeObject.top;
-              fcanvas._activeObject.top = top - 2;
-              fcanvas._activeObject.setCoords();
-              fcanvas.renderAll();
-            }
-            if (keyCode === 40) {
-              options.preventDefault();
-              let top = fcanvas._activeObject.top;
-              fcanvas._activeObject.top = top + 2;
-              fcanvas._activeObject.setCoords();
-              fcanvas.renderAll();
-            }
-            if (keyCode === 37) {
-              options.preventDefault();
-              let left = fcanvas._activeObject.left;
-              fcanvas._activeObject.left = left - 2;
-              fcanvas._activeObject.setCoords();
-              fcanvas.renderAll();
-            }
-            if (keyCode === 39) {
-              options.preventDefault();
-              let left = fcanvas._activeObject.left;
-              fcanvas._activeObject.left = left + 2;
-              fcanvas._activeObject.setCoords();
-              fcanvas.renderAll();
-            }
+          if (fcanvas._activeObject) {
+            if (!fcanvas._activeObject.isEditing) {
+              let keyCode = options.keyCode;
+              if (keyCode === 38) {
+                options.preventDefault();
+                let top = fcanvas._activeObject.top;
+                fcanvas._activeObject.top = top - 2;
+                fcanvas._activeObject.setCoords();
+                fcanvas.renderAll();
+              }
+              if (keyCode === 40) {
+                options.preventDefault();
+                let top = fcanvas._activeObject.top;
+                fcanvas._activeObject.top = top + 2;
+                fcanvas._activeObject.setCoords();
+                fcanvas.renderAll();
+              }
+              if (keyCode === 37) {
+                options.preventDefault();
+                let left = fcanvas._activeObject.left;
+                fcanvas._activeObject.left = left - 2;
+                fcanvas._activeObject.setCoords();
+                fcanvas.renderAll();
+              }
+              if (keyCode === 39) {
+                options.preventDefault();
+                let left = fcanvas._activeObject.left;
+                fcanvas._activeObject.left = left + 2;
+                fcanvas._activeObject.setCoords();
+                fcanvas.renderAll();
+              }
+              if (keyCode === 66 && options.ctrlKey) {
+                options.preventDefault();
+                editText('fontWeight', 'bold');
+              }
+              if (keyCode === 73 && options.ctrlKey) {
+                options.preventDefault();
+                editText('fontStyle', 'italic');
+              }
+              if (keyCode === 85 && options.ctrlKey) {
+                options.preventDefault();
+                editText('underline', 'true');
+              }
+            } // else {
+            //   if (
+            //     fcanvas._activeObject.text &&
+            //     fcanvas._activeObject.getSelectedText()
+            //   ) {
+            //     let keyCode = options.keyCode;
+            //     if (keyCode === 66 && options.ctrlKey) {
+            //       console.log(fcanvas._activeObject);
+            //       fcanvas._activeObject.setSelectionStyles({
+            //         fontWeight: 'bold',
+            //       });
+
+            //       let testArr = fcanvas._activeObject
+            //         .getSelectionStyles()
+            //         .map((cur) => {
+            //           return cur.fontWeight === 'bold' ? true : false;
+            //         });
+
+            //       console.log(testArr);
+
+            //       if (allEqual(testArr)) {
+            //         fcanvas._activeObject.setSelectionStyles({
+            //           fontWeight: 'normal',
+            //         });
+            //       } else {
+            //         fcanvas._activeObject.setSelectionStyles({
+            //           fontWeight: 'bold',
+            //         });
+            //       }
+
+            //       fcanvas.renderAll();
+            //     }
+            //   }
+            // }
           }
         }
       });
@@ -565,6 +616,7 @@ export class App extends Component {
                   setFcanvas={this.setFcanvas}
                   key={pg}
                   pg={pg + 1}
+                  editText={this.editText}
                   pdf={this.state.pdf}
                 />
               ))
@@ -572,6 +624,7 @@ export class App extends Component {
                 <LoadJSON
                   setFcanvas={this.setFcanvas}
                   key={index}
+                  editText={this.editText}
                   page={index}
                   pdf={this.state.pdf}
                 />
