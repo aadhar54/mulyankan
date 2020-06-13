@@ -5,7 +5,11 @@ const SelectPDF = ({ setPdf }) => {
   const [file, setFile] = useState(null);
 
   const prepareFile = (fileObject) => {
-    if (fileObject && fileObject.type.includes('pdf')) {
+    console.log(fileObject.type);
+    if (
+      (fileObject && fileObject.type.includes('pdf')) ||
+      fileObject.type.includes('json')
+    ) {
       console.log(fileObject.name);
       setFile(fileObject);
     }
@@ -13,20 +17,39 @@ const SelectPDF = ({ setPdf }) => {
 
   const proceed = () => {
     const reader = new FileReader();
-    reader.readAsBinaryString(file);
-    reader.addEventListener('load', async () => {
-      const task = pdfjsLib.getDocument({ data: reader.result });
-      task.onProgress = (progress) => {
-        console.log(progress);
-      };
-      task.promise.then((res) => {
+    if (file.type.includes('pdf')) {
+      reader.readAsBinaryString(file);
+      reader.addEventListener('load', async () => {
+        const task = pdfjsLib.getDocument({ data: reader.result });
+        task.onProgress = (progress) => {
+          console.log(progress);
+        };
+        task.promise.then((res) => {
+          setPdf({
+            name: file.name,
+            data: res,
+            type: file.type,
+          });
+        });
+      });
+    } else if (file.type.includes('json')) {
+      let blob;
+      const jsonReader = new FileReader();
+      reader.readAsArrayBuffer(file);
+      reader.addEventListener('load', async () => {
+        blob = new Blob([reader.result], { type: 'application/json' });
+        jsonReader.readAsText(blob);
+      });
+      jsonReader.addEventListener('load', () => {
+        let json = jsonReader.result;
+        json = JSON.parse(json);
         setPdf({
           name: file.name,
-          data: res,
+          data: json,
           type: file.type,
         });
       });
-    });
+    }
   };
 
   return (

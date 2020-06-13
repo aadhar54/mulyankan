@@ -88,7 +88,7 @@ const Menu = ({ setPdf, saveAsJSON }) => {
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => {
           e.preventDefault();
-          prepareFile(e.dataTransfer.files[0]);
+          if (mode === 'open') prepareFile(e.dataTransfer.files[0]);
         }}
       >
         <button
@@ -115,6 +115,10 @@ const Menu = ({ setPdf, saveAsJSON }) => {
               <div onClick={() => setMode('open')} className="menu-option">
                 <i className="material-icons">insert_drive_file</i>
                 <p>Open</p>
+              </div>
+              <div onClick={() => setMode('save')} className="menu-option">
+                <i className="material-icons">save</i>
+                <p>Save As</p>
               </div>
             </div>
           ) : mode === 'open' && !file ? (

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import SelectPDF from './SelectPDF';
 import Sidebar from './Sidebar';
 import jspdf from 'jspdf';
@@ -203,7 +203,6 @@ const LoadJSON = ({ pdf, page, setFcanvas }) => {
   console.log(pg);
   let json = JSON.stringify(pdf.data[page]);
   let img = pdf.data[page].objects[0];
-  console.log(img);
 
   const getPageAndRender = async () => {
     fcanvas = new fabric.Canvas(`fabric-${pg}`, {
@@ -226,6 +225,7 @@ const LoadJSON = ({ pdf, page, setFcanvas }) => {
       });
     });
     fcanvas.renderAll();
+    console.log(document.querySelector(`.canvas-container-${pg}`));
     // fcanvas.loadFromJSON(json, function () {
     //   fcanvas._objects[0].evented = false;
     //   fcanvas._objects[0].selectable = false;
@@ -244,7 +244,6 @@ const LoadJSON = ({ pdf, page, setFcanvas }) => {
         stopContextMenu: true,
         fireRightClick: true,
       });
-      console.log(fcanvas);
       fcanvas.originalDimensions = {
         height: fcanvas.getHeight(),
         width: fcanvas.getWidth(),
@@ -386,7 +385,9 @@ const LoadJSON = ({ pdf, page, setFcanvas }) => {
     configureFcanvas();
   };
 
-  getPageAndRender();
+  useEffect(() => {
+    getPageAndRender();
+  }, [pdf]);
   return (
     <div id="canvas-container" className={`canvas-container-${pg}`}>
       <canvas id={`fabric-${pg}`} className="fabric-js"></canvas>
