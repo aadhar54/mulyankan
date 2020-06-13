@@ -210,22 +210,22 @@ const LoadJSON = ({ pdf, page, setFcanvas, editText }) => {
       width: img.width,
       height: img.height,
     });
-    fabric.util.enlivenObjects(pdf.data[page].objects, function (objs) {
-      objs.forEach((o, index) => {
-        if (index === 0) {
-          o.evented = false;
-          o.selectable = false;
-          o.hasBorders = false;
-          o.hasControls = false;
-          o.hasRotatingPoint = false;
-        }
-        o.transparentCorners = false;
-        o.cornerColor = '#0984e3';
-        o.cornerSize = 7;
-        fcanvas.add(o);
-      });
-    });
-    fcanvas.renderAll();
+    // fabric.util.enlivenObjects(pdf.data[page].objects, function (objs) {
+    //   objs.forEach((o, index) => {
+    //     if (index === 0) {
+    //       o.evented = false;
+    //       o.selectable = false;
+    //       o.hasBorders = false;
+    //       o.hasControls = false;
+    //       o.hasRotatingPoint = false;
+    //     }
+    //     o.transparentCorners = false;
+    //     o.cornerColor = '#0984e3';
+    //     o.cornerSize = 7;
+    //     fcanvas.add(o);
+    //   });
+    // });
+    // fcanvas.renderAll();
     console.log(document.querySelector(`.canvas-container-${pg}`));
     // fcanvas.loadFromJSON(json, function () {
     //   fcanvas._objects[0].evented = false;
