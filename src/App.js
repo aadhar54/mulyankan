@@ -206,10 +206,7 @@ const LoadJSON = ({ pdf, page, setFcanvas, editText }) => {
   let img = pdf.data[page].objects[0];
 
   const getPageAndRender = async () => {
-    fcanvas = new fabric.Canvas(`fabric-${pg}`, {
-      width: img.width,
-      height: img.height,
-    });
+    fcanvas = new fabric.Canvas(`fabric-${pg}`);
     // fabric.util.enlivenObjects(pdf.data[page].objects, function (objs) {
     //   objs.forEach((o, index) => {
     //     if (index === 0) {
@@ -228,6 +225,8 @@ const LoadJSON = ({ pdf, page, setFcanvas, editText }) => {
     // fcanvas.renderAll();
     console.log(document.querySelector(`.canvas-container-${pg}`));
     fcanvas.loadFromJSON(json, function () {
+      fcanvas.setHeight(fcanvas._objects[0].height);
+      fcanvas.setWidth(fcanvas._objects[0].width);
       fcanvas._objects[0].evented = false;
       fcanvas._objects[0].selectable = false;
       fcanvas._objects[0].hasBorders = false;
