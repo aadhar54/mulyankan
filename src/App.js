@@ -555,7 +555,6 @@ export class App extends Component {
   };
 
   saveAsJSON = (filename) => {
-    ``;
     let saveData = {};
     fcArray.forEach((fc, index) => {
       let json = fc.toJSON();
