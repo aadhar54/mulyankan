@@ -227,19 +227,19 @@ const LoadJSON = ({ pdf, page, setFcanvas, editText }) => {
     // });
     // fcanvas.renderAll();
     console.log(document.querySelector(`.canvas-container-${pg}`));
-    // fcanvas.loadFromJSON(json, function () {
-    //   fcanvas._objects[0].evented = false;
-    //   fcanvas._objects[0].selectable = false;
-    //   fcanvas._objects[0].hasBorders = false;
-    //   fcanvas._objects[0].hasControls = false;
-    //   fcanvas._objects[0].hasRotatingPoint = false;
-    //   fcanvas._objects.forEach((cur) => {
-    //     cur.transparentCorners = false;
-    //     cur.cornerColor = '#0984e3';
-    //     cur.cornerSize = 7;
-    //   });
-    //   fcanvas.renderAll();
-    // });
+    fcanvas.loadFromJSON(json, function () {
+      fcanvas._objects[0].evented = false;
+      fcanvas._objects[0].selectable = false;
+      fcanvas._objects[0].hasBorders = false;
+      fcanvas._objects[0].hasControls = false;
+      fcanvas._objects[0].hasRotatingPoint = false;
+      fcanvas._objects.forEach((cur) => {
+        cur.transparentCorners = false;
+        cur.cornerColor = '#0984e3';
+        cur.cornerSize = 7;
+      });
+      fcanvas.renderAll();
+    });
     let configureFcanvas = () => {
       fcanvas.set({
         stopContextMenu: true,
