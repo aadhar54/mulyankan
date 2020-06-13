@@ -215,8 +215,6 @@ const LoadJSON = ({ pdf, page, setFcanvas, editText }) => {
       fcanvas._objects[0].hasBorders = false;
       fcanvas._objects[0].hasControls = false;
       fcanvas._objects[0].hasRotatingPoint = false;
-      fcanvas._objects[0].scaleToWidth(fcanvas.getWidth());
-      fcanvas._objects[0].scaleToHeight(fcanvas.getHeight());
       fcanvas._objects.forEach((cur) => {
         cur.transparentCorners = false;
         cur.cornerColor = '#0984e3';
