@@ -202,20 +202,21 @@ const LoadJSON = ({ pdf, page, setFcanvas, editText }) => {
   let fcanvas, mouseCoords;
   let pg = page + 1;
   console.log(pg);
-  let json = JSON.stringify(pdf.data[page]);
-  let img = pdf.data[page].objects[0];
+  let json = JSON.stringify(pdf.data[page].json);
 
   const getPageAndRender = async () => {
     fcanvas = new fabric.Canvas(`fabric-${pg}`);
     console.log(document.querySelector(`.canvas-container-${pg}`));
     fcanvas.loadFromJSON(json, function () {
-      fcanvas.setHeight(fcanvas._objects[0].height);
-      fcanvas.setWidth(fcanvas._objects[0].width);
+      fcanvas.setHeight(pdf.data[page].dimensions.height);
+      fcanvas.setWidth(pdf.data[page].dimensions.height);
       fcanvas._objects[0].evented = false;
       fcanvas._objects[0].selectable = false;
       fcanvas._objects[0].hasBorders = false;
       fcanvas._objects[0].hasControls = false;
       fcanvas._objects[0].hasRotatingPoint = false;
+      fcanvas._objects[0].scaleToWidth(fcanvas.getWidth());
+      fcanvas._objects[0].scaleToHeight(fcanvas.getHeight());
       fcanvas._objects.forEach((cur) => {
         cur.transparentCorners = false;
         cur.cornerColor = '#0984e3';
@@ -558,7 +559,14 @@ export class App extends Component {
   saveAsJSON = (filename) => {
     let saveData = {};
     fcArray.forEach((fc, index) => {
-      saveData[index] = fc.toJSON();
+      let json = fc.toJSON();
+      saveData[index] = {
+        json,
+        dimensions: {
+          height: fc.getHeight(),
+          width: fc.getWidth(),
+        },
+      };
     });
     let json = JSON.stringify(saveData);
     const el = document.createElement('a');
