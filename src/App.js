@@ -6,109 +6,60 @@ import Menu from './Menu';
 
 const fabric = require('fabric').fabric;
 
-const fcArray = [];
+let fcArray = [];
 
 const Cv = ({ pdf, pg, setFcanvas }) => {
-  let viewport, canvas, ctx, fcanvas;
-
-  const getPageAndRender = async () => {
-    const page = await pdf.getPage(pg);
-    viewport = page.getViewport({ scale: 1 });
-    canvas = document.createElement('canvas');
-    ctx = canvas.getContext('2d');
-    canvas.height = viewport.height;
-    canvas.width = viewport.width;
-    const renderContext = {
-      canvasContext: ctx,
-      viewport,
+  let viewport, canvas, ctx, fcanvas, mouseCoords;
+  const configureCanvas = (fc) => {
+    fc.originalDimensions = {
+      height: fc.getHeight(),
+      width: fc.getWidth(),
     };
-    let mouseCoords;
-    const task = page.render(renderContext);
-    task.promise.then(() => {
-      const bg = canvas.toDataURL();
-      fcanvas = new fabric.Canvas(`fabric-${pg}`);
-      fcanvas.set({
-        stopContextMenu: true,
-        fireRightClick: true,
-      });
-      fcanvas.setHeight(viewport.height);
-      fcanvas.setWidth(viewport.width);
-      fabric.Image.fromURL(
-        bg,
-        (img) => {
-          fcanvas.add(img);
-          fcanvas.sendToBack(img);
-          fcanvas.renderAll();
-        },
-        {
-          evented: false,
-          selectable: false,
-          hasBorders: false,
-          hasControls: false,
-          hasRotatingPoint: false,
-        }
-      );
-      fcanvas.originalDimensions = {
-        height: fcanvas.getHeight(),
-        width: fcanvas.getWidth(),
-      };
-
-      fcanvas.on('drop', (e) => {
-        let pointerLocation = fcanvas.getPointer(e.e);
-        mouseCoords = pointerLocation;
-      });
-
-      document
-        .querySelector(`#fabric-${pg}`)
-        .addEventListener('keypress', (e) => {
-          console.log(e.keyCode);
-        });
-
-      fabric.util.addListener(document.body, 'keydown', (options) => {
-        if (
-          options.keyCode === 37 ||
-          options.keyCode === 38 ||
-          options.keyCode === 39 ||
-          options.keyCode === 40
-        ) {
-          if (fcanvas._activeObject && !fcanvas._activeObject.isEditing) {
-            let keyCode = options.keyCode;
-            if (keyCode === 38) {
-              options.preventDefault();
-              let top = fcanvas._activeObject.top;
-              fcanvas._activeObject.top = top - 2;
-              fcanvas._activeObject.setCoords();
-              fcanvas.renderAll();
-            }
-            if (keyCode === 40) {
-              options.preventDefault();
-              let top = fcanvas._activeObject.top;
-              fcanvas._activeObject.top = top + 2;
-              fcanvas._activeObject.setCoords();
-              fcanvas.renderAll();
-            }
-            if (keyCode === 37) {
-              options.preventDefault();
-              let left = fcanvas._activeObject.left;
-              fcanvas._activeObject.left = left - 2;
-              fcanvas._activeObject.setCoords();
-              fcanvas.renderAll();
-            }
-            if (keyCode === 39) {
-              options.preventDefault();
-              let left = fcanvas._activeObject.left;
-              fcanvas._activeObject.left = left + 2;
-              fcanvas._activeObject.setCoords();
-              fcanvas.renderAll();
-            }
-          }
-        }
-      });
-
-      fcanvas.zoom = 1;
-      fcArray.push(fcanvas);
+    fc.on('drop', (e) => {
+      let pointerLocation = fc.getPointer(e.e);
+      mouseCoords = pointerLocation;
     });
 
+    fabric.util.addListener(document.body, 'keydown', (options) => {
+      if (
+        options.keyCode === 37 ||
+        options.keyCode === 38 ||
+        options.keyCode === 39 ||
+        options.keyCode === 40
+      ) {
+        if (fcanvas._activeObject && !fcanvas._activeObject.isEditing) {
+          let keyCode = options.keyCode;
+          if (keyCode === 38) {
+            options.preventDefault();
+            let top = fcanvas._activeObject.top;
+            fcanvas._activeObject.top = top - 2;
+            fcanvas._activeObject.setCoords();
+            fcanvas.renderAll();
+          }
+          if (keyCode === 40) {
+            options.preventDefault();
+            let top = fcanvas._activeObject.top;
+            fcanvas._activeObject.top = top + 2;
+            fcanvas._activeObject.setCoords();
+            fcanvas.renderAll();
+          }
+          if (keyCode === 37) {
+            options.preventDefault();
+            let left = fcanvas._activeObject.left;
+            fcanvas._activeObject.left = left - 2;
+            fcanvas._activeObject.setCoords();
+            fcanvas.renderAll();
+          }
+          if (keyCode === 39) {
+            options.preventDefault();
+            let left = fcanvas._activeObject.left;
+            fcanvas._activeObject.left = left + 2;
+            fcanvas._activeObject.setCoords();
+            fcanvas.renderAll();
+          }
+        }
+      }
+    });
     document
       .querySelector(`.canvas-container-${pg}`)
       .addEventListener('dragover', (e) => e.preventDefault());
@@ -193,10 +144,249 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
           fcanvas.add(img);
         }
       });
+    fc.zoom = 1;
+    fcArray.push(fc);
+  };
+
+  const getPageAndRender = async () => {
+    const page = await pdf.data.getPage(pg);
+    viewport = page.getViewport({ scale: 1 });
+    canvas = document.createElement('canvas');
+    ctx = canvas.getContext('2d');
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
+    const renderContext = {
+      canvasContext: ctx,
+      viewport,
+    };
+    const task = page.render(renderContext);
+    task.promise.then(() => {
+      const bg = canvas.toDataURL();
+      fcanvas = new fabric.Canvas(`fabric-${pg}`);
+      fcanvas.set({
+        stopContextMenu: true,
+        fireRightClick: true,
+      });
+      fcanvas.setHeight(viewport.height);
+      fcanvas.setWidth(viewport.width);
+      fabric.Image.fromURL(
+        bg,
+        (img) => {
+          fcanvas.add(img);
+          fcanvas.sendToBack(img);
+          fcanvas.renderAll();
+        },
+        {
+          evented: false,
+          selectable: false,
+          hasBorders: false,
+          hasControls: false,
+          hasRotatingPoint: false,
+        }
+      );
+      configureCanvas(fcanvas);
+    });
   };
 
   getPageAndRender();
 
+  return (
+    <div id="canvas-container" className={`canvas-container-${pg}`}>
+      <canvas id={`fabric-${pg}`} className="fabric-js"></canvas>
+    </div>
+  );
+};
+
+const LoadJSON = ({ pdf, page, setFcanvas }) => {
+  let fcanvas, mouseCoords;
+  let pg = page + 1;
+  console.log(pg);
+  let json = JSON.stringify(pdf.data[page]);
+  let img = pdf.data[page].objects[0];
+  console.log(img);
+
+  const getPageAndRender = async () => {
+    fcanvas = new fabric.Canvas(`fabric-${pg}`, {
+      width: img.width,
+      height: img.height,
+    });
+    fabric.util.enlivenObjects(pdf.data[page].objects, function (objs) {
+      objs.forEach((o, index) => {
+        if (index === 0) {
+          o.evented = false;
+          o.selectable = false;
+          o.hasBorders = false;
+          o.hasControls = false;
+          o.hasRotatingPoint = false;
+        }
+        o.transparentCorners = false;
+        o.cornerColor = '#0984e3';
+        o.cornerSize = 7;
+        fcanvas.add(o);
+      });
+    });
+    fcanvas.renderAll();
+    // fcanvas.loadFromJSON(json, function () {
+    //   fcanvas._objects[0].evented = false;
+    //   fcanvas._objects[0].selectable = false;
+    //   fcanvas._objects[0].hasBorders = false;
+    //   fcanvas._objects[0].hasControls = false;
+    //   fcanvas._objects[0].hasRotatingPoint = false;
+    //   fcanvas._objects.forEach((cur) => {
+    //     cur.transparentCorners = false;
+    //     cur.cornerColor = '#0984e3';
+    //     cur.cornerSize = 7;
+    //   });
+    //   fcanvas.renderAll();
+    // });
+    let configureFcanvas = () => {
+      fcanvas.set({
+        stopContextMenu: true,
+        fireRightClick: true,
+      });
+      console.log(fcanvas);
+      fcanvas.originalDimensions = {
+        height: fcanvas.getHeight(),
+        width: fcanvas.getWidth(),
+      };
+      fcanvas.on('drop', (e) => {
+        let pointerLocation = fcanvas.getPointer(e.e);
+        mouseCoords = pointerLocation;
+      });
+
+      fabric.util.addListener(document.body, 'keydown', (options) => {
+        if (
+          options.keyCode === 37 ||
+          options.keyCode === 38 ||
+          options.keyCode === 39 ||
+          options.keyCode === 40
+        ) {
+          if (fcanvas._activeObject && !fcanvas._activeObject.isEditing) {
+            let keyCode = options.keyCode;
+            if (keyCode === 38) {
+              options.preventDefault();
+              let top = fcanvas._activeObject.top;
+              fcanvas._activeObject.top = top - 2;
+              fcanvas._activeObject.setCoords();
+              fcanvas.renderAll();
+            }
+            if (keyCode === 40) {
+              options.preventDefault();
+              let top = fcanvas._activeObject.top;
+              fcanvas._activeObject.top = top + 2;
+              fcanvas._activeObject.setCoords();
+              fcanvas.renderAll();
+            }
+            if (keyCode === 37) {
+              options.preventDefault();
+              let left = fcanvas._activeObject.left;
+              fcanvas._activeObject.left = left - 2;
+              fcanvas._activeObject.setCoords();
+              fcanvas.renderAll();
+            }
+            if (keyCode === 39) {
+              options.preventDefault();
+              let left = fcanvas._activeObject.left;
+              fcanvas._activeObject.left = left + 2;
+              fcanvas._activeObject.setCoords();
+              fcanvas.renderAll();
+            }
+          }
+        }
+      });
+      document
+        .querySelector(`.canvas-container-${pg}`)
+        .addEventListener('dragover', (e) => e.preventDefault());
+      document
+        .querySelector(`.canvas-container-${pg}`)
+        .addEventListener('drop', (e) => {
+          e.preventDefault();
+
+          let id = e.dataTransfer.getData('id');
+          if (id === '#text') {
+            let text = new fabric.Textbox('Text', {
+              width: 30,
+              height: 30,
+              fontSize: 40,
+              fill: '#ff4757',
+              fireRightClick: true,
+              fontFamily: 'sans-serif',
+              transparentCorners: false,
+              cornerColor: '#0984e3',
+              cornerSize: 7,
+            });
+
+            text.set({
+              fill: '#ff4757',
+              fontFamily: 'sans-serif',
+              top: mouseCoords.y - text.get('height') / 2,
+              left: mouseCoords.x - text.get('width') / 2,
+            });
+
+            text.on('mousedown', (e) => {
+              if (e.button === 3) {
+                console.log('right click');
+              }
+            });
+
+            fcanvas.on('before:selection:cleared', (obj) => {
+              document.querySelector('.bold').style.backgroundColor = '#eee';
+              document.querySelector('.italic').style.backgroundColor = '#eee';
+              document.querySelector('.underline').style.backgroundColor =
+                '#eee';
+            });
+
+            fcanvas.on('object:selected', (obj) => {
+              let target = obj.target;
+              if (target.text) {
+                if (target.get('fontWeight') === 'bold') {
+                  document.querySelector('.bold').style.backgroundColor =
+                    '#ccc';
+                }
+                if (target.get('fontStyle') === 'italic') {
+                  document.querySelector('.italic').style.backgroundColor =
+                    '#ccc';
+                }
+                if (target.get('underline') === 'true') {
+                  document.querySelector('.underline').style.backgroundColor =
+                    '#ccc';
+                }
+              }
+            });
+
+            fcanvas.add(text);
+          } else {
+            let imgEl = document.querySelector(id);
+            let img = new fabric.Image(imgEl, {
+              transparentCorners: false,
+              cornerColor: '#0984e3',
+              cornerSize: 7,
+            });
+            let scaleValue = 50;
+            img.scaleToWidth(scaleValue);
+            img.scaleToHeight(scaleValue);
+            img.set({
+              top: mouseCoords.y - scaleValue / 2,
+              left: mouseCoords.x - scaleValue / 2,
+            });
+
+            fcanvas.on('object:modified', (obj) => {
+              let target = obj.target;
+              if (!target.isOnScreen()) {
+                fcanvas.remove(target);
+              }
+            });
+
+            fcanvas.add(img);
+          }
+        });
+      fcanvas.zoom = 1;
+      fcArray.push(fcanvas);
+    };
+    configureFcanvas();
+  };
+
+  getPageAndRender();
   return (
     <div id="canvas-container" className={`canvas-container-${pg}`}>
       <canvas id={`fabric-${pg}`} className="fabric-js"></canvas>
@@ -217,6 +407,7 @@ export class App extends Component {
   }
 
   setPdf = (pdf) => {
+    fcArray = [];
     this.setState({
       pdf,
     });
@@ -329,6 +520,22 @@ export class App extends Component {
     });
   };
 
+  saveAsJSON = (filename) => {
+    let saveData = {};
+    fcArray.forEach((fc, index) => {
+      saveData[index] = fc.toDatalessObject();
+    });
+    let json = JSON.stringify(saveData);
+    const el = document.createElement('a');
+    let name = `${filename}.json`;
+    const type = name.split('.').pop();
+    el.href = URL.createObjectURL(
+      new Blob([json], { type: `text/${type === 'txt' ? 'plain' : type}` })
+    );
+    el.download = name;
+    el.click();
+  };
+
   toggleMenu = () => {
     this.setState({
       menuOpen: !this.state.menuOpen,
@@ -350,17 +557,24 @@ export class App extends Component {
           setDownload={this.setDownload}
         />
         <div className="main-container" id="main-container">
-          <Menu setPdf={this.setPdf} />
-          {this.state.pdf
+          <Menu saveAsJSON={this.saveAsJSON} setPdf={this.setPdf} />
+          {this.state.pdf.type.includes('pdf')
             ? [...Array(this.state.pdf.data.numPages).keys()].map((pg) => (
                 <Cv
                   setFcanvas={this.setFcanvas}
                   key={pg}
                   pg={pg + 1}
-                  pdf={this.state.pdf.data}
+                  pdf={this.state.pdf}
                 />
               ))
-            : null}
+            : Object.entries(this.state.pdf.data).map((pg, index) => (
+                <LoadJSON
+                  setFcanvas={this.setFcanvas}
+                  key={index}
+                  page={index}
+                  pdf={this.state.pdf}
+                />
+              ))}
         </div>
       </main>
     );

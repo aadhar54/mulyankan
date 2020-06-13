@@ -23,6 +23,7 @@ const SelectPDF = ({ setPdf }) => {
         setPdf({
           name: file.name,
           data: res,
+          type: file.type,
         });
       });
     });

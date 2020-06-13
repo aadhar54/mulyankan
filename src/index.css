@@ -704,3 +704,51 @@ div[class^='canvas-container-'] {
   background-color: #ccc;
   grid-template-columns: 1fr 3fr;
 }
+
+.menu-option {
+  width: 95%;
+  margin: 10px auto;
+  border-radius: 10px;
+  min-height: 5rem;
+  background-color: #eee;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+  color: #2d3436;
+}
+
+.menu-option:hover {
+  background-color: #ccc;
+}
+
+.menu-option > p {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: auto 0;
+}
+
+.menu-option > i {
+  font-size: 2rem;
+  margin: auto auto;
+}
+
+.save-name {
+  background-color: #eee;
+  border: solid #ccc 1px;
+  border-radius: 5px;
+  padding: 1rem 2rem;
+  max-width: 21rem;
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.7rem;
+}
+
+.file-title-save {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0 auto;
+  color: #6ab04c;
+}
