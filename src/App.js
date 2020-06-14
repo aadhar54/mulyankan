@@ -574,7 +574,11 @@ export class App extends Component {
           setDownload={this.setDownload}
         />
         <div className="main-container" id="main-container">
-          <Menu saveAsJSON={this.saveAsJSON} setPdf={this.setPdf} />
+          <Menu
+            logURLs={this.logURLs}
+            saveAsJSON={this.saveAsJSON}
+            setPdf={this.setPdf}
+          />
           {this.state.pdf.type.includes('pdf')
             ? [...Array(this.state.pdf.data.numPages).keys()].map((pg) => (
                 <Cv

@@ -385,7 +385,7 @@ div[class^='canvas-container-'] {
 .divider {
   border: solid #ccc 1px;
   width: 90%;
-  margin: 1.2rem auto;
+  margin: 2rem auto;
 }
 
 .sidebar-sub {
@@ -580,17 +580,20 @@ div[class^='canvas-container-'] {
 .menu {
   background-color: #fff;
   transform: scale(0);
-  min-width: 25rem;
-  min-height: 30rem;
   border-radius: 10px;
   box-shadow: 0.5rem 1rem 5rem rgba(10, 0, 0, 0.3);
   transition: all 0.3s ease-out;
   transform-origin: 0 0;
   position: relative;
   padding: 1rem;
+  width: 0;
+  height: 0;
+  transform: scale(0);
 }
 
 .menu-visible {
+  width: 25rem;
+  height: 30rem;
   transform: scale(1);
 }
 

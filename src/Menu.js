@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 const pdfjsLib = window['pdfjs-dist/build/pdf'];
 
-const Menu = ({ setPdf, saveAsJSON }) => {
+const Menu = ({ setPdf, saveAsJSON, logURLs }) => {
   const [file, setFile] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [mode, setMode] = useState(null);
@@ -120,6 +120,10 @@ const Menu = ({ setPdf, saveAsJSON }) => {
                 <i className="material-icons">save</i>
                 <p>Save As</p>
               </div>
+              <div onClick={() => setMode('download')} className="menu-option">
+                <i className="material-icons">vertical_align_bottom</i>
+                <p>Download</p>
+              </div>
             </div>
           ) : mode === 'open' && !file ? (
             <div
@@ -159,16 +163,16 @@ const Menu = ({ setPdf, saveAsJSON }) => {
                 </button>
               </div>
             </div>
-          ) : (
+          ) : mode === 'save' ? (
             <div className="save-menu">
-              <p className="file-text">Save File as JSON</p>
+              <p className="file-text">Save As</p>
               <p
                 className="file-title file-title-save"
                 style={{ color: error ? '#ff4757' : '#00b894' }}
               >
                 {error
                   ? 'Please enter a proper file name.'
-                  : 'Enter a proper file name and click Download to download a JSON save file.'}
+                  : "Enter a proper file name and click Save. You'll be able to edit this file normally later."}
               </p>
               <input
                 onFocus={() => setError(false)}
@@ -192,6 +196,52 @@ const Menu = ({ setPdf, saveAsJSON }) => {
                   onClick={() => {
                     if (document.querySelector('.save-name').value) {
                       saveAsJSON(document.querySelector('.save-name').value);
+                      setIsOpen(false);
+                      setMode(null);
+                      setError(false);
+                    } else {
+                      setError(true);
+                    }
+                  }}
+                >
+                  <p>Save</p>
+                  <i className="material-icons">vertical_align_bottom</i>
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="save-menu">
+              <p className="file-text">Download File</p>
+              <p
+                className="file-title file-title-save"
+                style={{ color: error ? '#ff4757' : '#00b894' }}
+              >
+                {error
+                  ? 'Please enter a proper file name.'
+                  : 'Enter a proper file name and click Download to download PDF.'}
+              </p>
+              <input
+                onFocus={() => setError(false)}
+                type="text"
+                className="save-name"
+                placeholder="Enter File Name"
+              />
+              <div className="file-buttons">
+                <button
+                  className="menu-back"
+                  onClick={() => {
+                    setFile(null);
+                    setMode(null);
+                  }}
+                >
+                  <i className="material-icons">chevron_left</i>
+                  <p>Back</p>
+                </button>
+                <button
+                  className="menu-proceed"
+                  onClick={() => {
+                    if (document.querySelector('.save-name').value) {
+                      logURLs(document.querySelector('.save-name').value);
                       setIsOpen(false);
                       setMode(null);
                       setError(false);

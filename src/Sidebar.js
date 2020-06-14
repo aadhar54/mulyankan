@@ -4,7 +4,7 @@ import Lazyload from 'react-lazy-load';
 import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
 
-const Sidebar = ({ title, logURLs, setZoom, editText }) => {
+const Sidebar = ({ title, setZoom, editText }) => {
   const dragStart = (e) => {
     e.dataTransfer.setData('id', `#${e.target.id}`);
   };
@@ -163,35 +163,7 @@ const Sidebar = ({ title, logURLs, setZoom, editText }) => {
           ]}
         />
       </div>
-      <hr className="divider" />
-      <div className="sidebar-title sidebar-sub">Download</div>
-      <div className="download-info">
-        Please enter a proper file name, then click the button. The download
-        will begin in a few seconds.
-      </div>
-      <div className="download-btn">
-        <input
-          type="text"
-          className="download-name"
-          placeholder="Enter File Name"
-        />
-        {error ? <p>Please enter a file name</p> : null}
-        <button
-          style={{ fontSize: '1.7rem' }}
-          onClick={() => {
-            if (document.querySelector('.download-name').value) {
-              logURLs(document.querySelector('.download-name').value);
-              document.querySelector('.download-name').value = '';
-              setZoom(0.9, true);
-              setError(false);
-            } else {
-              setError(true);
-            }
-          }}
-        >
-          Download
-        </button>
-      </div>
+
       <div className="divider"></div>
       <div className="copyright">
         <div className="copyright-1">
