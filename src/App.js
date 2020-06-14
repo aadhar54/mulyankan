@@ -163,6 +163,7 @@ const Cv = ({ pdf, pg, setFcanvas, editText }) => {
         }
       });
     fc.zoom = 1;
+    fc.index = pg;
     fcArray.push(fc);
   };
 
@@ -427,6 +428,7 @@ const LoadJSON = ({ pdf, page, setFcanvas, editText }) => {
           }
         });
       fcanvas.zoom = 1;
+      fcanvas.index = pg;
       fcArray.push(fcanvas);
     };
     configureFcanvas();
@@ -549,7 +551,17 @@ export class App extends Component {
     let doc = new jspdf('p', 'pt', 'a4');
     let width = doc.internal.pageSize.width;
     let height = doc.internal.pageSize.height;
-    fcArray.forEach((cur, index, arr) => {
+    let sorter = (a, b) => {
+      if (a.index < b.index) {
+        return -1;
+      } else if (a.qty > b.qty) {
+        return 1;
+      } else {
+        return 0;
+      }
+    };
+    let downloadArray = fcArray.sort(sorter);
+    downloadArray.forEach((cur, index, arr) => {
       doc.addImage(
         cur.toDataURL({ format: 'png' }),
         'PNG',
@@ -571,12 +583,18 @@ export class App extends Component {
   saveAsJSON = (filename) => {
     this.setZoom(1.1, true);
     let saveData = {};
-    fcArray.forEach((fc, index) => {
+    let sorter = (a, b) => {
+      if (a.index < b.index) {
+        return -1;
+      } else if (a.qty > b.qty) {
+        return 1;
+      } else {
+        return 0;
+      }
+    };
+    let downloadArray = fcArray.sort(sorter);
+    downloadArray.forEach((fc, index) => {
       saveData[index] = fc.toDatalessObject();
-      // saveData[index] = {
-      //   json: fc.toDatalessObject(),
-      //   dimensions: fc.originlaDimensions,
-      // };
     });
     let json = JSON.stringify(saveData);
     const el = document.createElement('a');

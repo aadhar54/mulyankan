@@ -9,7 +9,6 @@ const Sidebar = ({ title, setZoom, editText }) => {
     e.dataTransfer.setData('id', `#${e.target.id}`);
   };
 
-  const [error, setError] = useState(false);
   const [sliderValue, setSliderVaue] = useState(40);
 
   useEffect(() => {
