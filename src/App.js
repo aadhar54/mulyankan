@@ -3,7 +3,6 @@ import SelectPDF from './SelectPDF';
 import Sidebar from './Sidebar';
 import jspdf from 'jspdf';
 import Menu from './Menu';
-import hotkeys from 'hotkeys-js';
 
 const fabric = require('fabric').fabric;
 
@@ -168,8 +167,10 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
         stopContextMenu: true,
         fireRightClick: true,
       });
-      fcanvas.setHeight(viewport.height);
-      fcanvas.setWidth(viewport.width);
+      fcanvas.setDimensions({
+        height: viewport.height,
+        width: viewport.width,
+      });
       fabric.Image.fromURL(
         bg,
         (img) => {
@@ -198,25 +199,42 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
   );
 };
 
-const LoadJSON = ({ pdf, page, setFcanvas, editText }) => {
+const LoadJSON = ({ pdf, page, setFcanvas }) => {
   let fcanvas, mouseCoords;
   let pg = page + 1;
   console.log(pg);
-  let json = JSON.stringify(pdf.data[page].json);
+  let json = JSON.stringify(pdf.data[page]);
+  let img = pdf.data[page].objects[0];
 
   const getPageAndRender = async () => {
     fcanvas = new fabric.Canvas(`fabric-${pg}`);
-    console.log(document.querySelector(`.canvas-container-${pg}`));
+    console.log(fcanvas);
+    // fabric.util.enlivenObjects(pdf.data[page].objects, function (objs) {
+    //   objs.forEach((o, index) => {
+    //     if (index === 0) {
+    //       o.evented = false;
+    //       o.selectable = false;
+    //       o.hasBorders = false;
+    //       o.hasControls = false;
+    //       o.hasRotatingPoint = false;
+    //     }
+    //     o.transparentCorners = false;
+    //     o.cornerColor = '#0984e3';
+    //     o.cornerSize = 7;
+    //     fcanvas.add(o);
+    //   });
+    // });
+    fcanvas.setDimensions({
+      height: img.height,
+      width: img.width,
+    });
+    fcanvas.renderAll();
     fcanvas.loadFromJSON(json, function () {
-      fcanvas.setHeight(pdf.data[page].dimensions.height);
-      fcanvas.setWidth(pdf.data[page].dimensions.height);
       fcanvas._objects[0].evented = false;
       fcanvas._objects[0].selectable = false;
       fcanvas._objects[0].hasBorders = false;
       fcanvas._objects[0].hasControls = false;
       fcanvas._objects[0].hasRotatingPoint = false;
-      fcanvas._objects[0].scaleToWidth(fcanvas.getWidth());
-      fcanvas._objects[0].scaleToHeight(fcanvas.getHeight());
       fcanvas._objects.forEach((cur) => {
         cur.transparentCorners = false;
         cur.cornerColor = '#0984e3';
@@ -243,88 +261,38 @@ const LoadJSON = ({ pdf, page, setFcanvas, editText }) => {
           options.keyCode === 37 ||
           options.keyCode === 38 ||
           options.keyCode === 39 ||
-          options.keyCode === 40 ||
-          options.keyCode === 66 ||
-          options.keyCode === 73 ||
-          options.keyCode === 85
+          options.keyCode === 40
         ) {
-          if (fcanvas._activeObject) {
-            if (!fcanvas._activeObject.isEditing) {
-              let keyCode = options.keyCode;
-              if (keyCode === 38) {
-                options.preventDefault();
-                let top = fcanvas._activeObject.top;
-                fcanvas._activeObject.top = top - 2;
-                fcanvas._activeObject.setCoords();
-                fcanvas.renderAll();
-              }
-              if (keyCode === 40) {
-                options.preventDefault();
-                let top = fcanvas._activeObject.top;
-                fcanvas._activeObject.top = top + 2;
-                fcanvas._activeObject.setCoords();
-                fcanvas.renderAll();
-              }
-              if (keyCode === 37) {
-                options.preventDefault();
-                let left = fcanvas._activeObject.left;
-                fcanvas._activeObject.left = left - 2;
-                fcanvas._activeObject.setCoords();
-                fcanvas.renderAll();
-              }
-              if (keyCode === 39) {
-                options.preventDefault();
-                let left = fcanvas._activeObject.left;
-                fcanvas._activeObject.left = left + 2;
-                fcanvas._activeObject.setCoords();
-                fcanvas.renderAll();
-              }
-              if (keyCode === 66 && options.ctrlKey) {
-                options.preventDefault();
-                editText('fontWeight', 'bold');
-              }
-              if (keyCode === 73 && options.ctrlKey) {
-                options.preventDefault();
-                editText('fontStyle', 'italic');
-              }
-              if (keyCode === 85 && options.ctrlKey) {
-                options.preventDefault();
-                editText('underline', 'true');
-              }
-            } // else {
-            //   if (
-            //     fcanvas._activeObject.text &&
-            //     fcanvas._activeObject.getSelectedText()
-            //   ) {
-            //     let keyCode = options.keyCode;
-            //     if (keyCode === 66 && options.ctrlKey) {
-            //       console.log(fcanvas._activeObject);
-            //       fcanvas._activeObject.setSelectionStyles({
-            //         fontWeight: 'bold',
-            //       });
-
-            //       let testArr = fcanvas._activeObject
-            //         .getSelectionStyles()
-            //         .map((cur) => {
-            //           return cur.fontWeight === 'bold' ? true : false;
-            //         });
-
-            //       console.log(testArr);
-
-            //       if (allEqual(testArr)) {
-            //         fcanvas._activeObject.setSelectionStyles({
-            //           fontWeight: 'normal',
-            //         });
-            //       } else {
-            //         fcanvas._activeObject.setSelectionStyles({
-            //           fontWeight: 'bold',
-            //         });
-            //       }
-
-            //       fcanvas.renderAll();
-            //     }
-            //   }
-            // }
+          if (fcanvas._activeObject && !fcanvas._activeObject.isEditing) {
+            let keyCode = options.keyCode;
+            if (keyCode === 38) {
+              options.preventDefault();
+              let top = fcanvas._activeObject.top;
+              fcanvas._activeObject.top = top - 2;
+              fcanvas._activeObject.setCoords();
+              fcanvas.renderAll();
+            }
+            if (keyCode === 40) {
+              options.preventDefault();
+              let top = fcanvas._activeObject.top;
+              fcanvas._activeObject.top = top + 2;
+              fcanvas._activeObject.setCoords();
+              fcanvas.renderAll();
+            }
+            if (keyCode === 37) {
+              options.preventDefault();
+              let left = fcanvas._activeObject.left;
+              fcanvas._activeObject.left = left - 2;
+              fcanvas._activeObject.setCoords();
+              fcanvas.renderAll();
+            }
+            if (keyCode === 39) {
+              options.preventDefault();
+              let left = fcanvas._activeObject.left;
+              fcanvas._activeObject.left = left + 2;
+              fcanvas._activeObject.setCoords();
+              fcanvas.renderAll();
+            }
           }
         }
       });
@@ -559,14 +527,7 @@ export class App extends Component {
   saveAsJSON = (filename) => {
     let saveData = {};
     fcArray.forEach((fc, index) => {
-      let json = fc.toJSON();
-      saveData[index] = {
-        json,
-        dimensions: {
-          height: fc.originalDimensions.height,
-          width: fc.originalDimensions.width,
-        },
-      };
+      saveData[index] = fc.toDatalessObject();
     });
     let json = JSON.stringify(saveData);
     const el = document.createElement('a');
@@ -607,7 +568,6 @@ export class App extends Component {
                   setFcanvas={this.setFcanvas}
                   key={pg}
                   pg={pg + 1}
-                  editText={this.editText}
                   pdf={this.state.pdf}
                 />
               ))
@@ -615,7 +575,6 @@ export class App extends Component {
                 <LoadJSON
                   setFcanvas={this.setFcanvas}
                   key={index}
-                  editText={this.editText}
                   page={index}
                   pdf={this.state.pdf}
                 />
