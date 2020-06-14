@@ -85,8 +85,8 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
           text.set({
             fill: '#ff4757',
             fontFamily: 'sans-serif',
-            top: mouseCoords.y - text.get('height') / 2,
-            left: mouseCoords.x - text.get('width') / 2,
+            top: mouseCoords ? mouseCoords.y - text.get('height') / 2 : 0,
+            left: mouseCoords ? mouseCoords.x - text.get('width') / 2 : 0,
           });
 
           text.on('mousedown', (e) => {
@@ -130,8 +130,8 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
           img.scaleToWidth(scaleValue);
           img.scaleToHeight(scaleValue);
           img.set({
-            top: mouseCoords.y - scaleValue / 2,
-            left: mouseCoords.x - scaleValue / 2,
+            top: mouseCoords ? mouseCoords.y - scaleValue / 2 : 0,
+            left: mouseCoords ? mouseCoords.x - scaleValue / 2 : 0,
           });
 
           fcanvas.on('object:modified', (obj) => {
@@ -171,6 +171,7 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
         height: viewport.height,
         width: viewport.width,
       });
+      console.log(fcanvas.height, fcanvas.width);
       fabric.Image.fromURL(
         bg,
         (img) => {
@@ -208,6 +209,10 @@ const LoadJSON = ({ pdf, page, setFcanvas }) => {
 
   const getPageAndRender = async () => {
     fcanvas = new fabric.Canvas(`fabric-${pg}`);
+    fcanvas.originalDimensions = {
+      height: img.height,
+      width: img.width,
+    };
     console.log(fcanvas);
     // fabric.util.enlivenObjects(pdf.data[page].objects, function (objs) {
     //   objs.forEach((o, index) => {
@@ -228,6 +233,7 @@ const LoadJSON = ({ pdf, page, setFcanvas }) => {
       height: img.height,
       width: img.width,
     });
+    console.log(fcanvas.height, fcanvas.width);
     fcanvas.renderAll();
     fcanvas.loadFromJSON(json, function () {
       fcanvas._objects[0].evented = false;
@@ -321,8 +327,8 @@ const LoadJSON = ({ pdf, page, setFcanvas }) => {
             text.set({
               fill: '#ff4757',
               fontFamily: 'sans-serif',
-              top: mouseCoords.y - text.get('height') / 2,
-              left: mouseCoords.x - text.get('width') / 2,
+              top: mouseCoords ? mouseCoords.y - text.get('height') / 2 : 0,
+              left: mouseCoords ? mouseCoords.x - text.get('width') / 2 : 0,
             });
 
             text.on('mousedown', (e) => {
@@ -367,10 +373,12 @@ const LoadJSON = ({ pdf, page, setFcanvas }) => {
             let scaleValue = 50;
             img.scaleToWidth(scaleValue);
             img.scaleToHeight(scaleValue);
-            img.set({
-              top: mouseCoords.y - scaleValue / 2,
-              left: mouseCoords.x - scaleValue / 2,
-            });
+            if (mouseCoords) {
+              img.set({
+                top: mouseCoords ? mouseCoords.y - scaleValue / 2 : 0,
+                left: mouseCoords ? mouseCoords.x - scaleValue / 2 : 0,
+              });
+            }
 
             fcanvas.on('object:modified', (obj) => {
               let target = obj.target;
@@ -525,9 +533,14 @@ export class App extends Component {
   };
 
   saveAsJSON = (filename) => {
+    this.setZoom(1.1, true);
     let saveData = {};
     fcArray.forEach((fc, index) => {
       saveData[index] = fc.toDatalessObject();
+      // saveData[index] = {
+      //   json: fc.toDatalessObject(),
+      //   dimensions: fc.originlaDimensions,
+      // };
     });
     let json = JSON.stringify(saveData);
     const el = document.createElement('a');
