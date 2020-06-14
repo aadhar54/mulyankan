@@ -257,12 +257,16 @@ div[class^='canvas-container-'] {
   text-align: center;
   border-radius: 2rem;
   background-color: rgba(220, 221, 225, 0.6);
+  position: relative;
 }
 
 .upload-pdf {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 20rem;
   height: 20rem;
-  margin-top: 10rem;
   font-size: 2rem;
   color: #636e72;
   background-color: #fff;
@@ -272,6 +276,20 @@ div[class^='canvas-container-'] {
   cursor: pointer;
   font-weight: bold;
   border: solid rgba(116, 185, 255, 1) 5px;
+}
+
+.upload-pdf:active {
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -45%);
+}
+
+.file-parent {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 90%;
+  transform: translate(-50%, -50%);
 }
 
 .filename-wrapper {

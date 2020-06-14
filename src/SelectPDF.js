@@ -53,7 +53,14 @@ const SelectPDF = ({ setPdf }) => {
   };
 
   return (
-    <div className="welcome-screen">
+    <div
+      className="welcome-screen"
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={(e) => {
+        e.preventDefault();
+        prepareFile(e.dataTransfer.files[0]);
+      }}
+    >
       <div className="title">
         <span className="title-main">mulyankan.</span>
         <span className="title-sub1">Checking exams made easy.</span>
@@ -85,7 +92,7 @@ const SelectPDF = ({ setPdf }) => {
           Drag PDF here or Click to select
         </button>
         {file ? (
-          <div>
+          <div className="file-parent">
             <div className="filename-wrapper">
               <p className="filename selected-file">Selected File:</p>
               <p className="filename">{file ? file.name : null}</p>
