@@ -8,7 +8,7 @@ const fabric = require('fabric').fabric;
 
 let fcArray = [];
 
-const Cv = ({ pdf, pg, setFcanvas }) => {
+const Cv = ({ pdf, pg, setFcanvas, editText }) => {
   let viewport, canvas, ctx, fcanvas, mouseCoords;
   const configureCanvas = (fc) => {
     fc.originalDimensions = {
@@ -25,7 +25,10 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
         options.keyCode === 37 ||
         options.keyCode === 38 ||
         options.keyCode === 39 ||
-        options.keyCode === 40
+        options.keyCode === 40 ||
+        options.keyCode === 66 ||
+        options.keyCode === 73 ||
+        options.keyCode === 85
       ) {
         if (fcanvas._activeObject && !fcanvas._activeObject.isEditing) {
           let keyCode = options.keyCode;
@@ -56,6 +59,21 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
             fcanvas._activeObject.left = left + 2;
             fcanvas._activeObject.setCoords();
             fcanvas.renderAll();
+          }
+          if (options.ctrlKey && !options.shiftKey) {
+            options.preventDefault();
+            if (keyCode === 66) {
+              editText('fontWeight', 'bold');
+              fcanvas.renderAll();
+            }
+            if (keyCode === 73) {
+              editText('fontStyle', 'italic');
+              fcanvas.renderAll();
+            }
+            if (keyCode === 85) {
+              editText('underline', 'true');
+              fcanvas.renderAll();
+            }
           }
         }
       }
@@ -200,7 +218,7 @@ const Cv = ({ pdf, pg, setFcanvas }) => {
   );
 };
 
-const LoadJSON = ({ pdf, page, setFcanvas }) => {
+const LoadJSON = ({ pdf, page, setFcanvas, editText }) => {
   let fcanvas, mouseCoords;
   let pg = page + 1;
   console.log(pg);
@@ -267,7 +285,10 @@ const LoadJSON = ({ pdf, page, setFcanvas }) => {
           options.keyCode === 37 ||
           options.keyCode === 38 ||
           options.keyCode === 39 ||
-          options.keyCode === 40
+          options.keyCode === 40 ||
+          options.keyCode === 66 ||
+          options.keyCode === 73 ||
+          options.keyCode === 85
         ) {
           if (fcanvas._activeObject && !fcanvas._activeObject.isEditing) {
             let keyCode = options.keyCode;
@@ -298,6 +319,21 @@ const LoadJSON = ({ pdf, page, setFcanvas }) => {
               fcanvas._activeObject.left = left + 2;
               fcanvas._activeObject.setCoords();
               fcanvas.renderAll();
+            }
+            if (options.ctrlKey && !options.shiftKey) {
+              options.preventDefault();
+              if (keyCode === 66) {
+                editText('fontWeight', 'bold');
+                fcanvas.renderAll();
+              }
+              if (keyCode === 73) {
+                editText('fontStyle', 'italic');
+                fcanvas.renderAll();
+              }
+              if (keyCode === 85) {
+                editText('underline', 'true');
+                fcanvas.renderAll();
+              }
             }
           }
         }
@@ -586,6 +622,7 @@ export class App extends Component {
                   key={pg}
                   pg={pg + 1}
                   pdf={this.state.pdf}
+                  editText={this.editText}
                 />
               ))
             : Object.entries(this.state.pdf.data).map((pg, index) => (
@@ -594,6 +631,7 @@ export class App extends Component {
                   key={index}
                   page={index}
                   pdf={this.state.pdf}
+                  editText={this.editText}
                 />
               ))}
         </div>
