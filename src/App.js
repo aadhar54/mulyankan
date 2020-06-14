@@ -3,21 +3,87 @@ import SelectPDF from './SelectPDF';
 import Sidebar from './Sidebar';
 import jspdf from 'jspdf';
 import Menu from './Menu';
-
+import './context-menu.css';
 const fabric = require('fabric').fabric;
+const ContextMenu = window['ContextMenu'];
 
 let fcArray = [];
+let copy;
 
-const Cv = ({ pdf, pg, setFcanvas, editText }) => {
+const Cv = ({ pdf, pg, setFcanvas, editText, setContext, paste }) => {
   let viewport, canvas, ctx, fcanvas, mouseCoords;
+
   const configureCanvas = (fc) => {
     fc.originalDimensions = {
       height: fc.getHeight(),
       width: fc.getWidth(),
     };
+
     fc.on('drop', (e) => {
+      fcArray.forEach((fc) => {
+        if (fc.index === pg) {
+          fc.activeCanvas = true;
+        } else {
+          fc.activeCanvas = false;
+        }
+      });
       let pointerLocation = fc.getPointer(e.e);
       mouseCoords = pointerLocation;
+    });
+
+    fc.on('mouse:down', (e) => {
+      fcArray.forEach((fc) => {
+        if (fc.index === pg) {
+          fc.activeCanvas = true;
+        } else {
+          fc.activeCanvas = false;
+        }
+      });
+      let pointerLocation = fc.getPointer(e.e);
+      mouseCoords = pointerLocation;
+      if (!document.querySelector('.context-menu-pure')) {
+        if (e.button === 3) {
+          let menu = new ContextMenu({
+            theme: 'pure', // or 'blue'
+            items: [
+              {
+                icon: 'content_copy',
+                name: 'Copy',
+                action: () => {
+                  if (fc._activeObject) {
+                    fc._activeObject.clone((cloned) => {
+                      copy = cloned;
+                    });
+                  }
+                  document
+                    .querySelectorAll('.context-menu-pure')
+                    .forEach((cm) => cm.remove());
+                },
+              },
+              {
+                icon: 'assignment',
+                name: 'Paste',
+                action: () => {
+                  paste(mouseCoords);
+                  document
+                    .querySelectorAll('.context-menu-pure')
+                    .forEach((cm) => cm.remove());
+                },
+              },
+            ],
+          });
+          e.e.preventDefault();
+          const time = menu.isOpen() ? 100 : 0;
+          menu.hide();
+          setTimeout(() => {
+            menu.show(e.e.pageX, e.e.pageY);
+          }, time);
+        }
+      } else {
+        document
+          .querySelectorAll('.context-menu-pure')
+          .forEach((cm) => cm.remove());
+      }
     });
 
     fabric.util.addListener(document.body, 'keydown', (options) => {
@@ -28,7 +94,9 @@ const Cv = ({ pdf, pg, setFcanvas, editText }) => {
         options.keyCode === 40 ||
         options.keyCode === 66 ||
         options.keyCode === 73 ||
-        options.keyCode === 85
+        options.keyCode === 85 ||
+        options.keyCode === 86 ||
+        options.keyCode === 67
       ) {
         if (fcanvas._activeObject && !fcanvas._activeObject.isEditing) {
           let keyCode = options.keyCode;
@@ -74,10 +142,20 @@ const Cv = ({ pdf, pg, setFcanvas, editText }) => {
               editText('underline', 'true');
               fcanvas.renderAll();
             }
+            if (keyCode === 67) {
+              fcanvas._activeObject.clone((clonedObj) => {
+                copy = clonedObj;
+              });
+            }
+            if (keyCode === 86) {
+              paste({ x: 0, y: 0 });
+            }
           }
         }
       }
     });
+
+    fabric.util.addListener(document.body, 'keyup', (e) => {});
     document
       .querySelector(`.canvas-container-${pg}`)
       .addEventListener('dragover', (e) => e.preventDefault());
@@ -164,6 +242,7 @@ const Cv = ({ pdf, pg, setFcanvas, editText }) => {
       });
     fc.zoom = 1;
     fc.index = pg;
+    fc.activeCanvas = false;
     fcArray.push(fc);
   };
 
@@ -183,14 +262,13 @@ const Cv = ({ pdf, pg, setFcanvas, editText }) => {
       const bg = canvas.toDataURL();
       fcanvas = new fabric.Canvas(`fabric-${pg}`);
       fcanvas.set({
-        stopContextMenu: true,
         fireRightClick: true,
+        stopContextMenu: true,
       });
       fcanvas.setDimensions({
         height: viewport.height,
         width: viewport.width,
       });
-      console.log(fcanvas.height, fcanvas.width);
       fabric.Image.fromURL(
         bg,
         (img) => {
@@ -219,7 +297,7 @@ const Cv = ({ pdf, pg, setFcanvas, editText }) => {
   );
 };
 
-const LoadJSON = ({ pdf, page, setFcanvas, editText }) => {
+const LoadJSON = ({ pdf, page, setFcanvas, editText, paste }) => {
   let fcanvas, mouseCoords;
   let pg = page + 1;
   console.log(pg);
@@ -269,16 +347,79 @@ const LoadJSON = ({ pdf, page, setFcanvas, editText }) => {
     });
     let configureFcanvas = () => {
       fcanvas.set({
-        stopContextMenu: true,
         fireRightClick: true,
+        stopContextMenu: true,
       });
       fcanvas.originalDimensions = {
         height: fcanvas.getHeight(),
         width: fcanvas.getWidth(),
       };
+
+      fcanvas.on('mouse:down', (e) => {
+        fcArray.forEach((fc) => {
+          if (fc.index === pg) {
+            fc.activeCanvas = true;
+          } else {
+            fc.activeCanvas = false;
+          }
+        });
+        let pointerLocation = fcanvas.getPointer(e.e);
+        mouseCoords = pointerLocation;
+        if (!document.querySelector('.context-menu-pure')) {
+          if (e.button === 3) {
+            let menu = new ContextMenu({
+              theme: 'pure', // or 'blue'
+              items: [
+                {
+                  icon: 'content_copy',
+                  name: 'Copy',
+                  action: () => {
+                    if (fcanvas._activeObject) {
+                      fcanvas._activeObject.clone((cloned) => {
+                        copy = cloned;
+                      });
+                    }
+                    document
+                      .querySelectorAll('.context-menu-pure')
+                      .forEach((cm) => cm.remove());
+                  },
+                },
+                {
+                  icon: 'assignment',
+                  name: 'Paste',
+                  action: () => {
+                    paste(mouseCoords);
+                    document
+                      .querySelectorAll('.context-menu-pure')
+                      .forEach((cm) => cm.remove());
+                  },
+                },
+              ],
+            });
+            e.e.preventDefault();
+            const time = menu.isOpen() ? 100 : 0;
+            menu.hide();
+            setTimeout(() => {
+              menu.show(e.e.pageX, e.e.pageY);
+            }, time);
+          }
+        } else {
+          document
+            .querySelectorAll('.context-menu-pure')
+            .forEach((cm) => cm.remove());
+        }
+      });
+
       fcanvas.on('drop', (e) => {
         let pointerLocation = fcanvas.getPointer(e.e);
         mouseCoords = pointerLocation;
+        fcArray.forEach((fc) => {
+          if (fc.index === pg) {
+            fc.activeCanvas = true;
+          } else {
+            fc.activeCanvas = false;
+          }
+        });
       });
 
       fabric.util.addListener(document.body, 'keydown', (options) => {
@@ -289,7 +430,9 @@ const LoadJSON = ({ pdf, page, setFcanvas, editText }) => {
           options.keyCode === 40 ||
           options.keyCode === 66 ||
           options.keyCode === 73 ||
-          options.keyCode === 85
+          options.keyCode === 85 ||
+          options.keyCode === 86 ||
+          options.keyCode === 67
         ) {
           if (fcanvas._activeObject && !fcanvas._activeObject.isEditing) {
             let keyCode = options.keyCode;
@@ -334,6 +477,14 @@ const LoadJSON = ({ pdf, page, setFcanvas, editText }) => {
               if (keyCode === 85) {
                 editText('underline', 'true');
                 fcanvas.renderAll();
+              }
+              if (keyCode === 67) {
+                fcanvas._activeObject.clone((clonedObj) => {
+                  copy = clonedObj;
+                });
+              }
+              if (keyCode === 86) {
+                paste({ x: 0, y: 0 });
               }
             }
           }
@@ -453,8 +604,57 @@ export class App extends Component {
       zoom: 1,
       download: true,
       menuOpen: false,
+      copy: null,
     };
   }
+
+  paste = (mouseCoords) => {
+    let canvas = fcArray.filter((cv) => cv.activeCanvas)[0];
+    let coords = mouseCoords;
+
+    console.log(canvas);
+    if (copy) {
+      if (copy.text) {
+        copy.clone((cp) => {
+          cp.set({
+            width: copy.width,
+            height: copy.height,
+            fontSize: 40,
+            fill: '#ff4757',
+            fireRightClick: true,
+            fontFamily: 'sans-serif',
+            transparentCorners: false,
+            cornerColor: '#0984e3',
+            cornerSize: 7,
+          });
+          cp.set({
+            top: coords.y ? coords.y - cp.get('height') / 2 : 0,
+            left: coords.x ? coords.x - cp.get('width') / 2 : 0,
+          });
+          canvas.add(cp);
+          cp.setCoords();
+        });
+      } else {
+        copy.clone((cp) => {
+          cp.set({
+            transparentCorners: false,
+            cornerColor: '#0984e3',
+            cornerSize: 7,
+            evented: true,
+          });
+          let scaleValue = 50;
+          cp.scaleToWidth(scaleValue);
+          cp.scaleToHeight(scaleValue);
+          cp.set({
+            top: coords.y ? coords.y - cp.get('height') / 2 : 0,
+            left: coords.x ? coords.x - cp.get('width') / 2 : 0,
+          });
+          canvas.add(cp);
+          cp.setCoords();
+        });
+      }
+    }
+  };
 
   setPdf = (pdf) => {
     fcArray = [];
@@ -641,6 +841,7 @@ export class App extends Component {
                   pg={pg + 1}
                   pdf={this.state.pdf}
                   editText={this.editText}
+                  paste={this.paste}
                 />
               ))
             : Object.entries(this.state.pdf.data).map((pg, index) => (
@@ -650,6 +851,7 @@ export class App extends Component {
                   page={index}
                   pdf={this.state.pdf}
                   editText={this.editText}
+                  paste={this.paste}
                 />
               ))}
         </div>

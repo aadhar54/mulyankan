@@ -63,6 +63,10 @@ const Menu = ({ setPdf, saveAsJSON, logURLs }) => {
   useEffect(() => {
     if (!isOpen) {
       setFile(null);
+    } else {
+      document
+        .querySelectorAll('.context-menu-pure')
+        .forEach((cm) => cm.remove());
     }
   }, [isOpen]);
 
