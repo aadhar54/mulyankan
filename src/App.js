@@ -298,7 +298,9 @@ const Cv = ({ pdf, pg, setFcanvas, editText, setContext, paste }) => {
     });
   };
 
-  getPageAndRender();
+  useEffect(() => {
+    getPageAndRender();
+  }, [pdf]);
 
   return (
     <div
