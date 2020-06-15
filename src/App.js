@@ -643,7 +643,7 @@ export class App extends Component {
           cp.set({
             width: copy.width,
             height: copy.height,
-            fontSize: 40,
+            fontSize: copy.get('fontSize'),
             fill: '#ff4757',
             fireRightClick: true,
             fontFamily: 'sans-serif',
@@ -658,6 +658,7 @@ export class App extends Component {
         });
       } else {
         copy.clone((cp) => {
+          console.log(copy.width, copy.height);
           cp.set({
             height: copy.height,
             width: copy.width,
@@ -668,6 +669,7 @@ export class App extends Component {
             top: coords.y ? coords.y : 0,
             left: coords.x ? coords.x : 0,
           });
+
           canvas.add(cp);
           cp.setCoords();
         });
