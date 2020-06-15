@@ -301,7 +301,11 @@ const Cv = ({ pdf, pg, setFcanvas, editText, setContext, paste }) => {
   getPageAndRender();
 
   return (
-    <div id="canvas-container" className={`canvas-container-${pg}`}>
+    <div
+      id="canvas-container"
+      className={`canvas-container-${pg}`}
+      onContextMenu={(e) => e.preventDefault()}
+    >
       <canvas id={`fabric-${pg}`} className="fabric-js"></canvas>
     </div>
   );
@@ -613,7 +617,11 @@ const LoadJSON = ({ pdf, page, setFcanvas, editText, paste }) => {
     getPageAndRender();
   }, [pdf]);
   return (
-    <div id="canvas-container" className={`canvas-container-${pg}`}>
+    <div
+      id="canvas-container"
+      className={`canvas-container-${pg}`}
+      onContextMenu={(e) => e.preventDefault()}
+    >
       <canvas id={`fabric-${pg}`} className="fabric-js"></canvas>
     </div>
   );
