@@ -313,6 +313,10 @@
   grid-template-columns: 1fr 4fr;
 }
 
+.context-menu-pure-btn:active {
+  transform: translate(0);
+}
+
 .context-menu-pure-btn::-moz-focus-inner,
 .context-menu-pure-btn::-moz-focus-inner {
   border: 0;

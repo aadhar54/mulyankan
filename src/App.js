@@ -644,7 +644,7 @@ export class App extends Component {
             width: copy.width,
             height: copy.height,
             fontSize: copy.get('fontSize'),
-            fill: '#ff4757',
+            fill: copy.get('fill'),
             fireRightClick: true,
             fontFamily: 'sans-serif',
             transparentCorners: false,
