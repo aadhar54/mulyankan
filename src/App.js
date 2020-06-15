@@ -51,7 +51,19 @@ const Cv = ({ pdf, pg, setFcanvas, editText, setContext, paste }) => {
                 name: 'Copy',
                 action: () => {
                   if (fc._activeObject) {
-                    copy = fc.findTarget(e.e);
+                    if (
+                      fc._activeObject.top <= fc.getPointer(e.e).y &&
+                      fc._activeObject.top + fc._activeObject.height >=
+                        fc.getPointer(e.e).y
+                    ) {
+                      if (
+                        fc._activeObject.left <= fc.getPointer(e.e).x &&
+                        fc._activeObject.left + fc._activeObject.width >=
+                          fc.getPointer(e.e).x
+                      ) {
+                        copy = fc.findTarget(e.e);
+                      }
+                    }
                   }
                   document
                     .querySelectorAll('.context-menu-pure')
@@ -373,7 +385,23 @@ const LoadJSON = ({ pdf, page, setFcanvas, editText, paste }) => {
                   name: 'Copy',
                   action: () => {
                     if (fcanvas._activeObject) {
-                      copy = fcanvas.findTarget(e.e);
+                      if (
+                        fcanvas._activeObject.top <=
+                          fcanvas.getPointer(e.e).y &&
+                        fcanvas._activeObject.top +
+                          fcanvas._activeObject.height >=
+                          fcanvas.getPointer(e.e).y
+                      ) {
+                        if (
+                          fcanvas._activeObject.left <=
+                            fcanvas.getPointer(e.e).x &&
+                          fcanvas._activeObject.left +
+                            fcanvas._activeObject.width >=
+                            fcanvas.getPointer(e.e).x
+                        ) {
+                          copy = fcanvas.findTarget(e.e);
+                        }
+                      }
                     }
                     document
                       .querySelectorAll('.context-menu-pure')
@@ -633,14 +661,13 @@ export class App extends Component {
       } else {
         copy.clone((cp) => {
           cp.set({
+            height: copy.height,
+            width: copy.width,
             transparentCorners: false,
             cornerColor: '#0984e3',
             cornerSize: 7,
             evented: true,
           });
-          let scaleValue = 50;
-          cp.scaleToWidth(scaleValue);
-          cp.scaleToHeight(scaleValue);
           cp.set({
             top: coords.y ? coords.y - cp.get('height') / 2 : 0,
             left: coords.x ? coords.x - cp.get('width') / 2 : 0,
@@ -770,9 +797,8 @@ export class App extends Component {
         doc.addPage();
       }
     });
-    doc.save(name);
-    this.setState({
-      download: false,
+    doc.save(name, { returnPromise: true }).then(() => {
+      console.log('ok');
     });
   };
 
@@ -820,8 +846,6 @@ export class App extends Component {
           title={this.state.pdf.name}
           setZoom={this.setZoom}
           editText={this.editText}
-          download={this.state.download}
-          setDownload={this.setDownload}
         />
         <div className="main-container" id="main-container">
           <Menu
