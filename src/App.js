@@ -61,7 +61,7 @@ const Cv = ({ pdf, pg, setFcanvas, editText, setContext, paste }) => {
                         fc._activeObject.left + fc._activeObject.width >=
                           fc.getPointer(e.e).x
                       ) {
-                        copy = fc.findTarget(e.e);
+                        copy = fc._activeObject;
                       }
                     }
                   }
@@ -399,7 +399,7 @@ const LoadJSON = ({ pdf, page, setFcanvas, editText, paste }) => {
                             fcanvas._activeObject.width >=
                             fcanvas.getPointer(e.e).x
                         ) {
-                          copy = fcanvas.findTarget(e.e);
+                          copy = fcanvas._activeObject;
                         }
                       }
                     }
@@ -650,8 +650,6 @@ export class App extends Component {
             transparentCorners: false,
             cornerColor: '#0984e3',
             cornerSize: 7,
-          });
-          cp.set({
             top: coords.y ? coords.y - cp.get('height') / 2 : 0,
             left: coords.x ? coords.x - cp.get('width') / 2 : 0,
           });
@@ -667,10 +665,8 @@ export class App extends Component {
             cornerColor: '#0984e3',
             cornerSize: 7,
             evented: true,
-          });
-          cp.set({
-            top: coords.y ? coords.y - cp.get('height') / 2 : 0,
-            left: coords.x ? coords.x - cp.get('width') / 2 : 0,
+            top: coords.y ? coords.y : 0,
+            left: coords.x ? coords.x : 0,
           });
           canvas.add(cp);
           cp.setCoords();
@@ -771,6 +767,7 @@ export class App extends Component {
   };
 
   logURLs = (name) => {
+    this.setZoom(1.1, true);
     let doc = new jspdf('p', 'pt', 'a4');
     let width = doc.internal.pageSize.width;
     let height = doc.internal.pageSize.height;
