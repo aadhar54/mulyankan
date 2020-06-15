@@ -298,7 +298,9 @@ const Cv = ({ pdf, pg, setFcanvas, editText, setContext, paste }) => {
     });
   };
 
-  getPageAndRender();
+  useEffect(() => {
+    getPageAndRender();
+  }, [pdf]);
 
   return (
     <div
@@ -686,6 +688,14 @@ export class App extends Component {
   };
 
   setPdf = (pdf) => {
+    fcArray.forEach((c) => {
+      c.dispose();
+    });
+    document
+      .querySelectorAll('div[class^="canvas-container-"]')
+      .forEach((cur) => {
+        console.log(cur);
+      });
     fcArray = [];
     this.setState({
       pdf,
