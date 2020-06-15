@@ -51,9 +51,7 @@ const Cv = ({ pdf, pg, setFcanvas, editText, setContext, paste }) => {
                 name: 'Copy',
                 action: () => {
                   if (fc._activeObject) {
-                    fc._activeObject.clone((cloned) => {
-                      copy = cloned;
-                    });
+                    copy = fc.findTarget(e.e);
                   }
                   document
                     .querySelectorAll('.context-menu-pure')
@@ -375,9 +373,7 @@ const LoadJSON = ({ pdf, page, setFcanvas, editText, paste }) => {
                   name: 'Copy',
                   action: () => {
                     if (fcanvas._activeObject) {
-                      fcanvas._activeObject.clone((cloned) => {
-                        copy = cloned;
-                      });
+                      copy = fcanvas.findTarget(e.e);
                     }
                     document
                       .querySelectorAll('.context-menu-pure')
