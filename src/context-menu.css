@@ -266,8 +266,8 @@
   border-radius: 10px;
   position: absolute;
   width: 20rem;
-  padding: 1rem;
   margin: 0;
+  overflow: hidden;
   background: #fff;
   z-index: 100;
   -webkit-box-shadow: 0.5rem 1rem 10rem rgba(10, 0, 0, 0.2);
@@ -332,8 +332,13 @@
 .context-menu-pure-item:hover {
   color: #2d3436;
   outline: none;
-  background-color: #ccc;
+  background-color: #eee;
   cursor: pointer;
+}
+
+.context-menu-pure-item:active {
+  transform: translate(0);
+  background-color: #ccc;
 }
 
 .context-menu-pure-item.disabled {
