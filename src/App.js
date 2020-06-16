@@ -1071,6 +1071,9 @@ export class App extends Component {
   };
 
   render() {
+    document.oncontextmenu = () => {
+      return false;
+    };
     return !this.state.pdf ? (
       <SelectPDF setPdf={this.setPdf} />
     ) : (
