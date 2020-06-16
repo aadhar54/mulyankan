@@ -437,6 +437,8 @@ const LoadJSON = ({ pdf, page, setFcanvas, editText, paste }) => {
     let json = JSON.stringify(undoStack[undoStack.length - 2]);
     redoStack.push(undoStack.pop());
     console.log(JSON.parse(json));
+    let coords = fcanvas.getPointer(e.e);
+
     c.loadFromJSON(json, () => {
       console.log('this runs');
       c._objects[0].evented = false;
@@ -815,14 +817,6 @@ const LoadJSON = ({ pdf, page, setFcanvas, editText, paste }) => {
                 left: mouseCoords ? mouseCoords.x - scaleValue / 2 : 0,
               });
             }
-
-            fcanvas.on('object:modified', (obj) => {
-              let target = obj.target;
-              if (!target.isOnScreen()) {
-                fcanvas.remove(target);
-              }
-            });
-
             fcanvas.add(img);
           }
         });
