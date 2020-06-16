@@ -262,6 +262,10 @@ const Cv = ({ pdf, pg, setFcanvas, editText, setContext, paste }) => {
             if (keyCode === 86) {
               paste({ x: 0, y: 0 });
             }
+          }
+        } else {
+          if (options.ctrlKey) {
+            let keyCode = options.keyCode;
             if (keyCode === 89) {
               redo(fcanvas);
             }
@@ -415,11 +419,65 @@ const Cv = ({ pdf, pg, setFcanvas, editText, setContext, paste }) => {
 };
 
 const LoadJSON = ({ pdf, page, setFcanvas, editText, paste }) => {
-  let fcanvas, mouseCoords;
+  let fcanvas,
+    mouseCoords,
+    pauseSaving = false,
+    undoStack = [],
+    redoStack = [];
   let pg = page + 1;
   console.log(pg);
   let json = JSON.stringify(pdf.data[page]);
   let img = pdf.data[page].objects[0];
+  const undo = (c) => {
+    pauseSaving = true;
+    if (undoStack.length === 1) {
+      pauseSaving = false;
+      return;
+    }
+    let json = JSON.stringify(undoStack[undoStack.length - 2]);
+    redoStack.push(undoStack.pop());
+    console.log(JSON.parse(json));
+    c.loadFromJSON(json, () => {
+      console.log('this runs');
+      c._objects[0].evented = false;
+      c._objects[0].selectable = false;
+      c._objects[0].hasBorders = false;
+      c._objects[0].hasControls = false;
+      c._objects[0].hasRotatingPoint = false;
+      c._objects.forEach((cur) => {
+        cur.transparentCorners = false;
+        cur.cornerColor = '#0984e3';
+        cur.cornerSize = 7;
+      });
+      c.renderAll();
+      pauseSaving = false;
+    });
+  };
+
+  const redo = (c) => {
+    pauseSaving = true;
+    if (redoStack.length === 0) {
+      pauseSaving = false;
+      return;
+    }
+    let json = JSON.stringify(redoStack[redoStack.length - 1]);
+    undoStack.push(redoStack.pop());
+    c.loadFromJSON(json, () => {
+      console.log('this runs');
+      c._objects[0].evented = false;
+      c._objects[0].selectable = false;
+      c._objects[0].hasBorders = false;
+      c._objects[0].hasControls = false;
+      c._objects[0].hasRotatingPoint = false;
+      c._objects.forEach((cur) => {
+        cur.transparentCorners = false;
+        cur.cornerColor = '#0984e3';
+        cur.cornerSize = 7;
+      });
+      c.renderAll();
+      pauseSaving = false;
+    });
+  };
 
   const getPageAndRender = async () => {
     fcanvas = new fabric.Canvas(`fabric-${pg}`);
@@ -471,6 +529,26 @@ const LoadJSON = ({ pdf, page, setFcanvas, editText, paste }) => {
         height: fcanvas.getHeight(),
         width: fcanvas.getWidth(),
       };
+
+      fcanvas.on('object:added', () => {
+        console.log(pauseSaving);
+        if (!pauseSaving) {
+          undoStack.push(fcanvas.toJSON());
+          redoStack.pop();
+        }
+      });
+      fcanvas.on('object:modified', (e) => {
+        if (!pauseSaving) {
+          undoStack.push(fcanvas.toJSON());
+          redoStack.pop();
+        }
+      });
+      fcanvas.on('object:removed', () => {
+        if (!pauseSaving) {
+          undoStack.push(fcanvas.toJSON());
+          redoStack.pop();
+        }
+      });
 
       fcanvas.on('mouse:down', (e) => {
         fcArray.forEach((fc) => {
@@ -525,6 +603,27 @@ const LoadJSON = ({ pdf, page, setFcanvas, editText, paste }) => {
                       .forEach((cm) => cm.remove());
                   },
                 },
+                {
+                  icon: 'undo',
+                  name: 'Undo',
+                  action: () => {
+                    undo(fcanvas);
+                    document
+                      .querySelectorAll('.context-menu-pure')
+                      .forEach((cm) => cm.remove());
+                  },
+                },
+                {
+                  icon: 'redo',
+                  name: 'Redo',
+                  action: () => {
+                    redo(fcanvas);
+                    console.log('redo');
+                    document
+                      .querySelectorAll('.context-menu-pure')
+                      .forEach((cm) => cm.remove());
+                  },
+                },
               ],
             });
             e.e.preventDefault();
@@ -563,7 +662,9 @@ const LoadJSON = ({ pdf, page, setFcanvas, editText, paste }) => {
           options.keyCode === 73 ||
           options.keyCode === 85 ||
           options.keyCode === 86 ||
-          options.keyCode === 67
+          options.keyCode === 67 ||
+          options.keyCode === 90 ||
+          options.keyCode === 89
         ) {
           if (fcanvas._activeObject && !fcanvas._activeObject.isEditing) {
             let keyCode = options.keyCode;
@@ -611,12 +712,27 @@ const LoadJSON = ({ pdf, page, setFcanvas, editText, paste }) => {
               }
               if (keyCode === 67) {
                 fcanvas._activeObject.clone((clonedObj) => {
-                  console.log('okay');
                   copy = clonedObj;
                 });
               }
               if (keyCode === 86) {
                 paste({ x: 0, y: 0 });
+              }
+              if (keyCode === 89) {
+                redo(fcanvas);
+              }
+              if (keyCode === 90) {
+                undo(fcanvas);
+              }
+            }
+          } else {
+            if (options.ctrlKey) {
+              let keyCode = options.keyCode;
+              if (keyCode === 89) {
+                redo(fcanvas);
+              }
+              if (keyCode === 90) {
+                undo(fcanvas);
               }
             }
           }
