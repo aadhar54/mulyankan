@@ -18,56 +18,60 @@ const Cv = ({ pdf, pg, setFcanvas, editText, setContext, paste }) => {
     ctx,
     fcanvas,
     mouseCoords,
-    state = [],
-    mods = 0;
+    undoStack = [],
+    redoStack = [],
+    pauseSaving = false;
 
   const undo = (c) => {
-    if (mods < state.length) {
-      c.clear().renderAll();
-      c.loadFromJSON(state[state.length - 1 - mods - 1], () => {
-        c._objects[0].evented = false;
-        c._objects[0].selectable = false;
-        c._objects[0].hasBorders = false;
-        c._objects[0].hasControls = false;
-        c._objects[0].hasRotatingPoint = false;
-        c._objects.forEach((cur) => {
-          cur.transparentCorners = false;
-          cur.cornerColor = '#0984e3';
-          cur.cornerSize = 7;
-        });
-        c.renderAll();
-      });
-      mods += 1;
+    pauseSaving = true;
+    if (undoStack.length === 1) {
+      pauseSaving = false;
+      return;
     }
+    let json = JSON.stringify(undoStack[undoStack.length - 2]);
+    redoStack.push(undoStack.pop());
+    console.log(JSON.parse(json));
+    c.loadFromJSON(json, () => {
+      console.log('this runs');
+      c._objects[0].evented = false;
+      c._objects[0].selectable = false;
+      c._objects[0].hasBorders = false;
+      c._objects[0].hasControls = false;
+      c._objects[0].hasRotatingPoint = false;
+      c._objects.forEach((cur) => {
+        cur.transparentCorners = false;
+        cur.cornerColor = '#0984e3';
+        cur.cornerSize = 7;
+      });
+      c.renderAll();
+      pauseSaving = false;
+    });
   };
 
   const redo = (c) => {
-    if (mods > 0) {
-      c.clear().renderAll();
-      c.loadFromJSON(state[state.length - 1 - mods + 1], () => {
-        c._objects[0].evented = false;
-        c._objects[0].selectable = false;
-        c._objects[0].hasBorders = false;
-        c._objects[0].hasControls = false;
-        c._objects[0].hasRotatingPoint = false;
-        c._objects.forEach((cur) => {
-          cur.transparentCorners = false;
-          cur.cornerColor = '#0984e3';
-          cur.cornerSize = 7;
-        });
-        c.renderAll();
+    pauseSaving = true;
+    if (redoStack.length === 0) {
+      pauseSaving = false;
+      return;
+    }
+    let json = JSON.stringify(redoStack[redoStack.length - 1]);
+    undoStack.push(redoStack.pop());
+    c.loadFromJSON(json, () => {
+      console.log('this runs');
+      c._objects[0].evented = false;
+      c._objects[0].selectable = false;
+      c._objects[0].hasBorders = false;
+      c._objects[0].hasControls = false;
+      c._objects[0].hasRotatingPoint = false;
+      c._objects.forEach((cur) => {
+        cur.transparentCorners = false;
+        cur.cornerColor = '#0984e3';
+        cur.cornerSize = 7;
       });
-      mods -= 1;
-    }
+      c.renderAll();
+      pauseSaving = false;
+    });
   };
-
-  const updateHistory = (saveHistory, c) => {
-    if (saveHistory === true) {
-      let myjson = JSON.stringify(c);
-      state.push(myjson);
-    }
-  };
-
   const configureCanvas = (fc) => {
     fc.originalDimensions = {
       height: fc.getHeight(),
@@ -75,10 +79,23 @@ const Cv = ({ pdf, pg, setFcanvas, editText, setContext, paste }) => {
     };
 
     fc.on('object:added', () => {
-      updateHistory(true, fc);
+      console.log(pauseSaving);
+      if (!pauseSaving) {
+        undoStack.push(fc.toJSON());
+        redoStack.pop();
+      }
     });
     fc.on('object:modified', () => {
-      updateHistory(true, fc);
+      if (!pauseSaving) {
+        undoStack.push(fc.toJSON());
+        redoStack.pop();
+      }
+    });
+    fc.on('object:removed', () => {
+      if (!pauseSaving) {
+        undoStack.push(fc.toJSON());
+        redoStack.pop();
+      }
     });
 
     fc.on('drop', (e) => {
@@ -145,12 +162,23 @@ const Cv = ({ pdf, pg, setFcanvas, editText, setContext, paste }) => {
               {
                 icon: 'undo',
                 name: 'Undo',
-                action: () => undo(fc),
+                action: () => {
+                  undo(fc);
+                  document
+                    .querySelectorAll('.context-menu-pure')
+                    .forEach((cm) => cm.remove());
+                },
               },
               {
                 icon: 'redo',
                 name: 'Redo',
-                action: () => redo(fc),
+                action: () => {
+                  redo(fc);
+                  console.log('redo');
+                  document
+                    .querySelectorAll('.context-menu-pure')
+                    .forEach((cm) => cm.remove());
+                },
               },
             ],
           });
@@ -178,7 +206,9 @@ const Cv = ({ pdf, pg, setFcanvas, editText, setContext, paste }) => {
         options.keyCode === 73 ||
         options.keyCode === 85 ||
         options.keyCode === 86 ||
-        options.keyCode === 67
+        options.keyCode === 67 ||
+        options.keyCode === 90 ||
+        options.keyCode === 89
       ) {
         if (fcanvas._activeObject && !fcanvas._activeObject.isEditing) {
           let keyCode = options.keyCode;
@@ -231,6 +261,12 @@ const Cv = ({ pdf, pg, setFcanvas, editText, setContext, paste }) => {
             }
             if (keyCode === 86) {
               paste({ x: 0, y: 0 });
+            }
+            if (keyCode === 89) {
+              redo(fcanvas);
+            }
+            if (keyCode === 90) {
+              undo(fcanvas);
             }
           }
         }

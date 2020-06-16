@@ -292,10 +292,6 @@
   border-radius: 5px;
 }
 
-.context-menu-pure-item:not(:last-child) {
-  margin-bottom: 5px;
-}
-
 .context-menu-pure-btn {
   background: none;
   line-height: normal;
@@ -308,7 +304,7 @@
   text-align: left;
   cursor: pointer;
   white-space: nowrap;
-  padding: 1rem 2rem;
+  padding: 0.7rem 2rem;
   display: grid;
   grid-template-columns: 1fr 4fr;
 }
@@ -351,14 +347,13 @@
 }
 
 .context-menu-pure-item.disabled .context-menu-pure-btn {
-  cursor: pure;
+  cursor: not-allowed;
 }
 
 .context-menu-pure-separator {
   display: block;
   margin: 7px 5px;
   height: 1px;
-  border-bottom: 1px solid #23aff7;
   background-color: #aaa;
 }
 
@@ -369,12 +364,6 @@
   top: 50%;
   -webkit-transform: translateY(-50%);
   transform: translateY(-50%);
-  border: 5px solid transparent;
-  border-left-color: #808080;
-}
-
-.context-menu-pure-item.subcontext-menu-pure:hover::after {
-  border-left-color: #23aff7;
 }
 
 .context-menu-pure .context-menu-pure {
