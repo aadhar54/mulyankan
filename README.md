@@ -27,5 +27,5 @@ _
 
 &nbsp;&nbsp;
 
-## Well.. I want that one feature you don't have..
-No problemo! Just open an issue and I'll try my best to implement it as soon as possible!
+## If you're still like - "Well.. I want that one feature you don't have.." or "This doesn't work!!"
+No problemo! Just open an issue and I'll try my best to fix the issue as soon as possible. If you've made a request for a feature, I'm gonna make sure I implement it to make the job for teachers easier all over the world!
