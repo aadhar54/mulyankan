@@ -1,866 +1,71 @@
-// unredo2
-
-import React, { Component, useEffect } from 'react';
+import React, { Component } from 'react';
 import SelectPDF from './SelectPDF';
 import Sidebar from './Sidebar';
 import jspdf from 'jspdf';
 import Menu from './Menu';
-import './context-menu.css';
-const fabric = require('fabric').fabric;
-const ContextMenu = window['ContextMenu'];
-
-let fcArray = [];
-let copy;
-
-const Cv = ({ pdf, pg, setFcanvas, editText, setContext, paste }) => {
-  let viewport,
-    canvas,
-    ctx,
-    fcanvas,
-    mouseCoords,
-    undoStack = [],
-    redoStack = [],
-    pauseSaving = false;
-
-  const undo = (c) => {
-    pauseSaving = true;
-    if (undoStack.length === 1) {
-      pauseSaving = false;
-      return;
-    }
-    let json = JSON.stringify(undoStack[undoStack.length - 2]);
-    redoStack.push(undoStack.pop());
-    console.log(JSON.parse(json));
-    c.loadFromJSON(json, () => {
-      console.log('this runs');
-      c._objects[0].evented = false;
-      c._objects[0].selectable = false;
-      c._objects[0].hasBorders = false;
-      c._objects[0].hasControls = false;
-      c._objects[0].hasRotatingPoint = false;
-      c._objects.forEach((cur) => {
-        cur.transparentCorners = false;
-        cur.cornerColor = '#0984e3';
-        cur.cornerSize = 7;
-      });
-      c.renderAll();
-      pauseSaving = false;
-    });
-  };
-
-  const redo = (c) => {
-    pauseSaving = true;
-    if (redoStack.length === 0) {
-      pauseSaving = false;
-      return;
-    }
-    let json = JSON.stringify(redoStack[redoStack.length - 1]);
-    undoStack.push(redoStack.pop());
-    c.loadFromJSON(json, () => {
-      console.log('this runs');
-      c._objects[0].evented = false;
-      c._objects[0].selectable = false;
-      c._objects[0].hasBorders = false;
-      c._objects[0].hasControls = false;
-      c._objects[0].hasRotatingPoint = false;
-      c._objects.forEach((cur) => {
-        cur.transparentCorners = false;
-        cur.cornerColor = '#0984e3';
-        cur.cornerSize = 7;
-      });
-      c.renderAll();
-      pauseSaving = false;
-    });
-  };
-  const configureCanvas = (fc) => {
-    fc.originalDimensions = {
-      height: fc.getHeight(),
-      width: fc.getWidth(),
-    };
-
-    fc.on('object:added', () => {
-      console.log(pauseSaving);
-      if (!pauseSaving) {
-        undoStack.push(fc.toJSON());
-        redoStack.pop();
-      }
-    });
-    fc.on('object:modified', () => {
-      if (!pauseSaving) {
-        undoStack.push(fc.toJSON());
-        redoStack.pop();
-      }
-    });
-    fc.on('object:removed', () => {
-      if (!pauseSaving) {
-        undoStack.push(fc.toJSON());
-        redoStack.pop();
-      }
-    });
-
-    fc.on('drop', (e) => {
-      fcArray.forEach((fc) => {
-        if (fc.index === pg) {
-          fc.activeCanvas = true;
-        } else {
-          fc.activeCanvas = false;
-        }
-      });
-      let pointerLocation = fc.getPointer(e.e);
-      mouseCoords = pointerLocation;
-    });
-
-    fc.on('mouse:down', (e) => {
-      fcArray.forEach((fc) => {
-        if (fc.index === pg) {
-          fc.activeCanvas = true;
-        } else {
-          fc.activeCanvas = false;
-        }
-      });
-      let pointerLocation = fc.getPointer(e.e);
-      mouseCoords = pointerLocation;
-      if (!document.querySelector('.context-menu-pure')) {
-        if (e.button === 3) {
-          let menu = new ContextMenu({
-            theme: 'pure', // or 'blue'
-            items: [
-              {
-                icon: 'content_copy',
-                name: 'Copy',
-                action: () => {
-                  if (fc._activeObject) {
-                    if (
-                      fc._activeObject.top <= fc.getPointer(e.e).y &&
-                      fc._activeObject.top + fc._activeObject.height >=
-                        fc.getPointer(e.e).y
-                    ) {
-                      if (
-                        fc._activeObject.left <= fc.getPointer(e.e).x &&
-                        fc._activeObject.left + fc._activeObject.width >=
-                          fc.getPointer(e.e).x
-                      ) {
-                        copy = fc._activeObject;
-                      }
-                    }
-                  }
-                  document
-                    .querySelectorAll('.context-menu-pure')
-                    .forEach((cm) => cm.remove());
-                },
-              },
-              {
-                icon: 'assignment',
-                name: 'Paste',
-                action: () => {
-                  paste(mouseCoords);
-                  document
-                    .querySelectorAll('.context-menu-pure')
-                    .forEach((cm) => cm.remove());
-                },
-              },
-              {
-                icon: 'undo',
-                name: 'Undo',
-                action: () => {
-                  undo(fc);
-                  document
-                    .querySelectorAll('.context-menu-pure')
-                    .forEach((cm) => cm.remove());
-                },
-              },
-              {
-                icon: 'redo',
-                name: 'Redo',
-                action: () => {
-                  redo(fc);
-                  console.log('redo');
-                  document
-                    .querySelectorAll('.context-menu-pure')
-                    .forEach((cm) => cm.remove());
-                },
-              },
-            ],
-          });
-          e.e.preventDefault();
-          const time = menu.isOpen() ? 100 : 0;
-          menu.hide();
-          setTimeout(() => {
-            menu.show(e.e.pageX, e.e.pageY);
-          }, time);
-        }
-      } else {
-        document
-          .querySelectorAll('.context-menu-pure')
-          .forEach((cm) => cm.remove());
-      }
-    });
-
-    fabric.util.addListener(document.body, 'keydown', (options) => {
-      if (
-        options.keyCode === 37 ||
-        options.keyCode === 38 ||
-        options.keyCode === 39 ||
-        options.keyCode === 40 ||
-        options.keyCode === 66 ||
-        options.keyCode === 73 ||
-        options.keyCode === 85 ||
-        options.keyCode === 86 ||
-        options.keyCode === 67 ||
-        options.keyCode === 90 ||
-        options.keyCode === 89
-      ) {
-        if (fcanvas._activeObject && !fcanvas._activeObject.isEditing) {
-          let keyCode = options.keyCode;
-          if (keyCode === 38) {
-            options.preventDefault();
-            let top = fcanvas._activeObject.top;
-            fcanvas._activeObject.top = top - 2;
-            fcanvas._activeObject.setCoords();
-            fcanvas.renderAll();
-          }
-          if (keyCode === 40) {
-            options.preventDefault();
-            let top = fcanvas._activeObject.top;
-            fcanvas._activeObject.top = top + 2;
-            fcanvas._activeObject.setCoords();
-            fcanvas.renderAll();
-          }
-          if (keyCode === 37) {
-            options.preventDefault();
-            let left = fcanvas._activeObject.left;
-            fcanvas._activeObject.left = left - 2;
-            fcanvas._activeObject.setCoords();
-            fcanvas.renderAll();
-          }
-          if (keyCode === 39) {
-            options.preventDefault();
-            let left = fcanvas._activeObject.left;
-            fcanvas._activeObject.left = left + 2;
-            fcanvas._activeObject.setCoords();
-            fcanvas.renderAll();
-          }
-          if (options.ctrlKey && !options.shiftKey) {
-            options.preventDefault();
-            if (keyCode === 66) {
-              editText('fontWeight', 'bold');
-              fcanvas.renderAll();
-            }
-            if (keyCode === 73) {
-              editText('fontStyle', 'italic');
-              fcanvas.renderAll();
-            }
-            if (keyCode === 85) {
-              editText('underline', 'true');
-              fcanvas.renderAll();
-            }
-            if (keyCode === 67) {
-              fcanvas._activeObject.clone((clonedObj) => {
-                copy = clonedObj;
-              });
-            }
-            if (keyCode === 86) {
-              paste({ x: 0, y: 0 });
-            }
-          }
-        } else {
-          if (options.ctrlKey) {
-            let keyCode = options.keyCode;
-            if (keyCode === 89) {
-              redo(fcanvas);
-            }
-            if (keyCode === 90) {
-              undo(fcanvas);
-            }
-          }
-        }
-      }
-    });
-
-    fabric.util.addListener(document.body, 'keyup', (e) => {});
-    document
-      .querySelector(`.canvas-container-${pg}`)
-      .addEventListener('dragover', (e) => e.preventDefault());
-    document
-      .querySelector(`.canvas-container-${pg}`)
-      .addEventListener('drop', (e) => {
-        e.preventDefault();
-
-        let id = e.dataTransfer.getData('id');
-        if (id === '#text') {
-          let text = new fabric.Textbox('Text', {
-            width: 30,
-            height: 30,
-            fontSize: 40,
-            fill: '#ff4757',
-            fireRightClick: true,
-            fontFamily: 'sans-serif',
-            transparentCorners: false,
-            cornerColor: '#0984e3',
-            cornerSize: 7,
-          });
-
-          text.set({
-            fill: '#ff4757',
-            fontFamily: 'sans-serif',
-            top: mouseCoords ? mouseCoords.y - text.get('height') / 2 : 0,
-            left: mouseCoords ? mouseCoords.x - text.get('width') / 2 : 0,
-          });
-
-          text.on('mousedown', (e) => {
-            if (e.button === 3) {
-              console.log('right click');
-            }
-          });
-
-          fcanvas.on('before:selection:cleared', (obj) => {
-            document.querySelector('.bold').style.backgroundColor = '#eee';
-            document.querySelector('.italic').style.backgroundColor = '#eee';
-            document.querySelector('.underline').style.backgroundColor = '#eee';
-          });
-
-          fcanvas.on('object:selected', (obj) => {
-            let target = obj.target;
-            if (target.text) {
-              if (target.get('fontWeight') === 'bold') {
-                document.querySelector('.bold').style.backgroundColor = '#ccc';
-              }
-              if (target.get('fontStyle') === 'italic') {
-                document.querySelector('.italic').style.backgroundColor =
-                  '#ccc';
-              }
-              if (target.get('underline') === 'true') {
-                document.querySelector('.underline').style.backgroundColor =
-                  '#ccc';
-              }
-            }
-          });
-
-          fcanvas.add(text);
-        } else {
-          let imgEl = document.querySelector(id);
-          let img = new fabric.Image(imgEl, {
-            transparentCorners: false,
-            cornerColor: '#0984e3',
-            cornerSize: 7,
-          });
-          let scaleValue = 50;
-          img.scaleToWidth(scaleValue);
-          img.scaleToHeight(scaleValue);
-          img.set({
-            top: mouseCoords ? mouseCoords.y - scaleValue / 2 : 0,
-            left: mouseCoords ? mouseCoords.x - scaleValue / 2 : 0,
-          });
-
-          fcanvas.add(img);
-        }
-      });
-    fc.zoom = 1;
-    fc.index = pg;
-    fc.activeCanvas = false;
-    fcArray.push(fc);
-  };
-
-  const getPageAndRender = async () => {
-    const page = await pdf.data.getPage(pg);
-    viewport = page.getViewport({ scale: 1 });
-    canvas = document.createElement('canvas');
-    ctx = canvas.getContext('2d');
-    canvas.height = viewport.height;
-    canvas.width = viewport.width;
-    const renderContext = {
-      canvasContext: ctx,
-      viewport,
-    };
-    const task = page.render(renderContext);
-    task.promise.then(() => {
-      const bg = canvas.toDataURL();
-      fcanvas = new fabric.Canvas(`fabric-${pg}`);
-      fcanvas.set({
-        fireRightClick: true,
-        stopContextMenu: true,
-      });
-      fcanvas.setDimensions({
-        height: viewport.height,
-        width: viewport.width,
-      });
-      fabric.Image.fromURL(
-        bg,
-        (img) => {
-          fcanvas.add(img);
-          fcanvas.sendToBack(img);
-          fcanvas.renderAll();
-        },
-        {
-          evented: false,
-          selectable: false,
-          hasBorders: false,
-          hasControls: false,
-          hasRotatingPoint: false,
-        }
-      );
-      configureCanvas(fcanvas);
-    });
-  };
-
-  useEffect(() => {
-    getPageAndRender();
-  }, [pdf]);
-
-  return (
-    <div
-      id="canvas-container"
-      className={`canvas-container-${pg}`}
-      onContextMenu={(e) => e.preventDefault()}
-    >
-      <canvas id={`fabric-${pg}`} className="fabric-js"></canvas>
-    </div>
-  );
-};
-
-const LoadJSON = ({ pdf, page, setFcanvas, editText, paste }) => {
-  let fcanvas,
-    mouseCoords,
-    pauseSaving = false,
-    undoStack = [],
-    redoStack = [];
-  let pg = page + 1;
-  console.log(pg);
-  let json = JSON.stringify(pdf.data[page]);
-  let img = pdf.data[page].objects[0];
-  const undo = (c) => {
-    pauseSaving = true;
-    if (undoStack.length === 1) {
-      pauseSaving = false;
-      return;
-    }
-    let json = JSON.stringify(undoStack[undoStack.length - 2]);
-    redoStack.push(undoStack.pop());
-    console.log(JSON.parse(json));
-
-    c.loadFromJSON(json, () => {
-      console.log('this runs');
-      c._objects[0].evented = false;
-      c._objects[0].selectable = false;
-      c._objects[0].hasBorders = false;
-      c._objects[0].hasControls = false;
-      c._objects[0].hasRotatingPoint = false;
-      c._objects.forEach((cur) => {
-        cur.transparentCorners = false;
-        cur.cornerColor = '#0984e3';
-        cur.cornerSize = 7;
-      });
-      c.renderAll();
-      pauseSaving = false;
-    });
-  };
-
-  const redo = (c) => {
-    pauseSaving = true;
-    if (redoStack.length === 0) {
-      pauseSaving = false;
-      return;
-    }
-    let json = JSON.stringify(redoStack[redoStack.length - 1]);
-    undoStack.push(redoStack.pop());
-    c.loadFromJSON(json, () => {
-      console.log('this runs');
-      c._objects[0].evented = false;
-      c._objects[0].selectable = false;
-      c._objects[0].hasBorders = false;
-      c._objects[0].hasControls = false;
-      c._objects[0].hasRotatingPoint = false;
-      c._objects.forEach((cur) => {
-        cur.transparentCorners = false;
-        cur.cornerColor = '#0984e3';
-        cur.cornerSize = 7;
-      });
-      c.renderAll();
-      pauseSaving = false;
-    });
-  };
-
-  const getPageAndRender = async () => {
-    fcanvas = new fabric.Canvas(`fabric-${pg}`);
-    fcanvas.originalDimensions = {
-      height: img.height,
-      width: img.width,
-    };
-    console.log(fcanvas);
-    // fabric.util.enlivenObjects(pdf.data[page].objects, function (objs) {
-    //   objs.forEach((o, index) => {
-    //     if (index === 0) {
-    //       o.evented = false;
-    //       o.selectable = false;
-    //       o.hasBorders = false;
-    //       o.hasControls = false;
-    //       o.hasRotatingPoint = false;
-    //     }
-    //     o.transparentCorners = false;
-    //     o.cornerColor = '#0984e3';
-    //     o.cornerSize = 7;
-    //     fcanvas.add(o);
-    //   });
-    // });
-    fcanvas.setDimensions({
-      height: img.height,
-      width: img.width,
-    });
-    console.log(fcanvas.height, fcanvas.width);
-    fcanvas.renderAll();
-    fcanvas.loadFromJSON(json, function () {
-      fcanvas._objects[0].evented = false;
-      fcanvas._objects[0].selectable = false;
-      fcanvas._objects[0].hasBorders = false;
-      fcanvas._objects[0].hasControls = false;
-      fcanvas._objects[0].hasRotatingPoint = false;
-      fcanvas._objects.forEach((cur) => {
-        cur.transparentCorners = false;
-        cur.cornerColor = '#0984e3';
-        cur.cornerSize = 7;
-      });
-      fcanvas.renderAll();
-    });
-    let configureFcanvas = () => {
-      fcanvas.set({
-        fireRightClick: true,
-        stopContextMenu: true,
-      });
-      fcanvas.originalDimensions = {
-        height: fcanvas.getHeight(),
-        width: fcanvas.getWidth(),
-      };
-
-      fcanvas.on('object:added', () => {
-        console.log(pauseSaving);
-        if (!pauseSaving) {
-          undoStack.push(fcanvas.toJSON());
-          redoStack.pop();
-        }
-      });
-      fcanvas.on('object:modified', (e) => {
-        if (!pauseSaving) {
-          undoStack.push(fcanvas.toJSON());
-          redoStack.pop();
-        }
-      });
-      fcanvas.on('object:removed', () => {
-        if (!pauseSaving) {
-          undoStack.push(fcanvas.toJSON());
-          redoStack.pop();
-        }
-      });
-
-      fcanvas.on('mouse:down', (e) => {
-        fcArray.forEach((fc) => {
-          if (fc.index === pg) {
-            fc.activeCanvas = true;
-          } else {
-            fc.activeCanvas = false;
-          }
-        });
-        let pointerLocation = fcanvas.getPointer(e.e);
-        mouseCoords = pointerLocation;
-        if (!document.querySelector('.context-menu-pure')) {
-          if (e.button === 3) {
-            let menu = new ContextMenu({
-              theme: 'pure', // or 'blue'
-              items: [
-                {
-                  icon: 'content_copy',
-                  name: 'Copy',
-                  action: () => {
-                    if (fcanvas._activeObject) {
-                      if (
-                        fcanvas._activeObject.top <=
-                          fcanvas.getPointer(e.e).y &&
-                        fcanvas._activeObject.top +
-                          fcanvas._activeObject.height >=
-                          fcanvas.getPointer(e.e).y
-                      ) {
-                        if (
-                          fcanvas._activeObject.left <=
-                            fcanvas.getPointer(e.e).x &&
-                          fcanvas._activeObject.left +
-                            fcanvas._activeObject.width >=
-                            fcanvas.getPointer(e.e).x
-                        ) {
-                          copy = fcanvas._activeObject;
-                        }
-                      }
-                    }
-                    document
-                      .querySelectorAll('.context-menu-pure')
-                      .forEach((cm) => cm.remove());
-                  },
-                },
-                {
-                  icon: 'assignment',
-                  name: 'Paste',
-                  action: () => {
-                    paste(mouseCoords);
-                    document
-                      .querySelectorAll('.context-menu-pure')
-                      .forEach((cm) => cm.remove());
-                  },
-                },
-                {
-                  icon: 'undo',
-                  name: 'Undo',
-                  action: () => {
-                    undo(fcanvas);
-                    document
-                      .querySelectorAll('.context-menu-pure')
-                      .forEach((cm) => cm.remove());
-                  },
-                },
-                {
-                  icon: 'redo',
-                  name: 'Redo',
-                  action: () => {
-                    redo(fcanvas);
-                    console.log('redo');
-                    document
-                      .querySelectorAll('.context-menu-pure')
-                      .forEach((cm) => cm.remove());
-                  },
-                },
-              ],
-            });
-            e.e.preventDefault();
-            const time = menu.isOpen() ? 100 : 0;
-            menu.hide();
-            setTimeout(() => {
-              menu.show(e.e.pageX, e.e.pageY);
-            }, time);
-          }
-        } else {
-          document
-            .querySelectorAll('.context-menu-pure')
-            .forEach((cm) => cm.remove());
-        }
-      });
-
-      fcanvas.on('drop', (e) => {
-        let pointerLocation = fcanvas.getPointer(e.e);
-        mouseCoords = pointerLocation;
-        fcArray.forEach((fc) => {
-          if (fc.index === pg) {
-            fc.activeCanvas = true;
-          } else {
-            fc.activeCanvas = false;
-          }
-        });
-      });
-
-      fabric.util.addListener(document.body, 'keydown', (options) => {
-        if (
-          options.keyCode === 37 ||
-          options.keyCode === 38 ||
-          options.keyCode === 39 ||
-          options.keyCode === 40 ||
-          options.keyCode === 66 ||
-          options.keyCode === 73 ||
-          options.keyCode === 85 ||
-          options.keyCode === 86 ||
-          options.keyCode === 67 ||
-          options.keyCode === 90 ||
-          options.keyCode === 89
-        ) {
-          if (fcanvas._activeObject && !fcanvas._activeObject.isEditing) {
-            let keyCode = options.keyCode;
-            if (keyCode === 38) {
-              options.preventDefault();
-              let top = fcanvas._activeObject.top;
-              fcanvas._activeObject.top = top - 2;
-              fcanvas._activeObject.setCoords();
-              fcanvas.renderAll();
-            }
-            if (keyCode === 40) {
-              options.preventDefault();
-              let top = fcanvas._activeObject.top;
-              fcanvas._activeObject.top = top + 2;
-              fcanvas._activeObject.setCoords();
-              fcanvas.renderAll();
-            }
-            if (keyCode === 37) {
-              options.preventDefault();
-              let left = fcanvas._activeObject.left;
-              fcanvas._activeObject.left = left - 2;
-              fcanvas._activeObject.setCoords();
-              fcanvas.renderAll();
-            }
-            if (keyCode === 39) {
-              options.preventDefault();
-              let left = fcanvas._activeObject.left;
-              fcanvas._activeObject.left = left + 2;
-              fcanvas._activeObject.setCoords();
-              fcanvas.renderAll();
-            }
-            if (options.ctrlKey && !options.shiftKey) {
-              options.preventDefault();
-              if (keyCode === 66) {
-                editText('fontWeight', 'bold');
-                fcanvas.renderAll();
-              }
-              if (keyCode === 73) {
-                editText('fontStyle', 'italic');
-                fcanvas.renderAll();
-              }
-              if (keyCode === 85) {
-                editText('underline', 'true');
-                fcanvas.renderAll();
-              }
-              if (keyCode === 67) {
-                fcanvas._activeObject.clone((clonedObj) => {
-                  copy = clonedObj;
-                });
-              }
-              if (keyCode === 86) {
-                paste({ x: 0, y: 0 });
-              }
-              if (keyCode === 89) {
-                redo(fcanvas);
-              }
-              if (keyCode === 90) {
-                undo(fcanvas);
-              }
-            }
-          } else {
-            if (options.ctrlKey) {
-              let keyCode = options.keyCode;
-              if (keyCode === 89) {
-                redo(fcanvas);
-              }
-              if (keyCode === 90) {
-                undo(fcanvas);
-              }
-            }
-          }
-        }
-      });
-      document
-        .querySelector(`.canvas-container-${pg}`)
-        .addEventListener('dragover', (e) => e.preventDefault());
-      document
-        .querySelector(`.canvas-container-${pg}`)
-        .addEventListener('drop', (e) => {
-          e.preventDefault();
-
-          let id = e.dataTransfer.getData('id');
-          if (id === '#text') {
-            let text = new fabric.Textbox('Text', {
-              width: 30,
-              height: 30,
-              fontSize: 40,
-              fill: '#ff4757',
-              fireRightClick: true,
-              fontFamily: 'sans-serif',
-              transparentCorners: false,
-              cornerColor: '#0984e3',
-              cornerSize: 7,
-            });
-
-            text.set({
-              fill: '#ff4757',
-              fontFamily: 'sans-serif',
-              top: mouseCoords ? mouseCoords.y - text.get('height') / 2 : 0,
-              left: mouseCoords ? mouseCoords.x - text.get('width') / 2 : 0,
-            });
-
-            text.on('mousedown', (e) => {
-              if (e.button === 3) {
-                console.log('right click');
-              }
-            });
-
-            fcanvas.on('before:selection:cleared', (obj) => {
-              document.querySelector('.bold').style.backgroundColor = '#eee';
-              document.querySelector('.italic').style.backgroundColor = '#eee';
-              document.querySelector('.underline').style.backgroundColor =
-                '#eee';
-            });
-
-            fcanvas.on('object:selected', (obj) => {
-              let target = obj.target;
-              if (target.text) {
-                if (target.get('fontWeight') === 'bold') {
-                  document.querySelector('.bold').style.backgroundColor =
-                    '#ccc';
-                }
-                if (target.get('fontStyle') === 'italic') {
-                  document.querySelector('.italic').style.backgroundColor =
-                    '#ccc';
-                }
-                if (target.get('underline') === 'true') {
-                  document.querySelector('.underline').style.backgroundColor =
-                    '#ccc';
-                }
-              }
-            });
-
-            fcanvas.add(text);
-          } else {
-            let imgEl = document.querySelector(id);
-            let img = new fabric.Image(imgEl, {
-              transparentCorners: false,
-              cornerColor: '#0984e3',
-              cornerSize: 7,
-            });
-            let scaleValue = 50;
-            img.scaleToWidth(scaleValue);
-            img.scaleToHeight(scaleValue);
-            if (mouseCoords) {
-              img.set({
-                top: mouseCoords ? mouseCoords.y - scaleValue / 2 : 0,
-                left: mouseCoords ? mouseCoords.x - scaleValue / 2 : 0,
-              });
-            }
-            fcanvas.add(img);
-          }
-        });
-      fcanvas.zoom = 1;
-      fcanvas.index = pg;
-      fcArray.push(fcanvas);
-    };
-    configureFcanvas();
-  };
-
-  useEffect(() => {
-    getPageAndRender();
-  }, [pdf]);
-  return (
-    <div
-      id="canvas-container"
-      className={`canvas-container-${pg}`}
-      onContextMenu={(e) => e.preventDefault()}
-    >
-      <canvas id={`fabric-${pg}`} className="fabric-js"></canvas>
-    </div>
-  );
-};
+import Cv from './Cv.js';
+import LoadJSON from './LoadJSON';
 
 export class App extends Component {
   constructor() {
     super();
     this.state = {
       pdf: null,
-      fcanvas: [],
+      fcArray: [],
       zoom: 1,
-      download: true,
-      menuOpen: false,
       copy: null,
+      download: true,
+      menuOpen: false
     };
   }
 
-  paste = (mouseCoords) => {
-    let canvas = fcArray.filter((cv) => cv.activeCanvas)[0];
-    let coords = mouseCoords;
+  setActiveCanvas = index => {
+    let sorter = (a, b) => {
+      if (a.index < b.index) {
+        return -1;
+      } else if (a.qty > b.qty) {
+        return 1;
+      } else {
+        return 0;
+      }
+    };
+    let toBeActive = this.state.fcArray.filter(fc => fc.index === index)[0];
+    let newArray = this.state.fcArray.filter(fc => fc.index !== index);
+    newArray.forEach(c => (c.activeCanvas = false));
+    toBeActive.activeCanvas = true;
+    newArray.push(toBeActive);
+    let finalArray = newArray.sort(sorter);
+    console.log(finalArray);
+  };
 
+  setCopy = newCopy => {
+    this.setState({ copy: newCopy });
+  };
+
+  setFcArray = (arg, erase = false) => {
+    if (erase) {
+      this.setState({
+        fcArray: []
+      });
+      return;
+    }
+    this.setState(state => {
+      let newFcArray = state.fcArray.concat(arg);
+      return {
+        fcArray: newFcArray
+      };
+    });
+  };
+
+  paste = mouseCoords => {
+    let canvas = this.state.fcArray.filter(cv => cv.activeCanvas)[0];
+    let coords = mouseCoords;
     console.log(canvas);
-    if (copy) {
-      if (copy.text) {
-        copy.clone((cp) => {
+    if (this.state.copy) {
+      if (this.state.copy.text) {
+        let copy = this.state.copy;
+
+        copy.clone(cp => {
           cp.set({
             width: copy.width,
             height: copy.height,
@@ -872,13 +77,14 @@ export class App extends Component {
             cornerColor: '#0984e3',
             cornerSize: 7,
             top: coords.y ? coords.y - cp.get('height') / 2 : 0,
-            left: coords.x ? coords.x - cp.get('width') / 2 : 0,
+            left: coords.x ? coords.x - cp.get('width') / 2 : 0
           });
           canvas.add(cp);
           cp.setCoords();
         });
       } else {
-        copy.clone((cp) => {
+        this.state.copy.clone(cp => {
+          let copy = this.state.copy;
           console.log(copy.width, copy.height);
           cp.set({
             height: copy.height,
@@ -888,7 +94,7 @@ export class App extends Component {
             cornerSize: 7,
             evented: true,
             top: coords.y ? coords.y : 0,
-            left: coords.x ? coords.x : 0,
+            left: coords.x ? coords.x : 0
           });
 
           canvas.add(cp);
@@ -898,29 +104,30 @@ export class App extends Component {
     }
   };
 
-  setPdf = (pdf) => {
-    fcArray.forEach((c) => {
+  setPdf = pdf => {
+    this.state.fcArray.forEach(c => {
       c.dispose();
     });
     document
       .querySelectorAll('div[class^="canvas-container-"]')
-      .forEach((cur) => {
+      .forEach(cur => {
         console.log(cur);
       });
-    fcArray = [];
+
+    this.setFcArray([], true);
     this.setState({
-      pdf,
+      pdf
     });
   };
 
-  setDownload = (value) => {
+  setDownload = value => {
     this.setState({
-      download: value,
+      download: value
     });
   };
 
   editText = (param, value) => {
-    fcArray.forEach((fc) => {
+    this.state.fcArray.forEach(fc => {
       if (fc._activeObject && fc._activeObject.text) {
         let def = fc._activeObject.get(param);
         if (def === value) {
@@ -968,16 +175,16 @@ export class App extends Component {
 
   setZoom = (f, reset = false) => {
     let factor = f;
-    fcArray.forEach((fc) => {
+    this.state.fcArray.forEach(fc => {
       if (reset) {
         factor = 1 / (fc.height / fc.originalDimensions.height);
       }
       fc.setDimensions({
         width: fc.getWidth() * factor,
-        height: fc.getHeight() * factor,
+        height: fc.getHeight() * factor
       });
       let objects = fc.getObjects();
-      objects.forEach((object) => {
+      objects.forEach(object => {
         object.scaleX *= factor;
         object.scaleY *= factor;
         object.top *= factor;
@@ -990,14 +197,14 @@ export class App extends Component {
     });
   };
 
-  setFcanvas = (fc) => {
+  setFcanvas = fc => {
     const fcArray = this.state.fcanvas.concat(fc);
     this.setState({
-      fcanvas: fcArray,
+      fcanvas: fcArray
     });
   };
 
-  logURLs = (name) => {
+  logURLs = name => {
     this.setZoom(1.1, true);
     let doc = new jspdf('p', 'pt', 'a4');
     let width = doc.internal.pageSize.width;
@@ -1011,7 +218,7 @@ export class App extends Component {
         return 0;
       }
     };
-    let downloadArray = fcArray.sort(sorter);
+    let downloadArray = this.state.fcArray.sort(sorter);
     downloadArray.forEach((cur, index, arr) => {
       doc.addImage(
         cur.toDataURL({ format: 'png' }),
@@ -1030,7 +237,7 @@ export class App extends Component {
     });
   };
 
-  saveAsJSON = (filename) => {
+  saveAsJSON = filename => {
     this.setZoom(1.1, true);
     let saveData = {};
     let sorter = (a, b) => {
@@ -1042,7 +249,7 @@ export class App extends Component {
         return 0;
       }
     };
-    let downloadArray = fcArray.sort(sorter);
+    let downloadArray = this.state.fcArray.sort(sorter);
     downloadArray.forEach((fc, index) => {
       saveData[index] = fc.toDatalessObject();
     });
@@ -1059,7 +266,7 @@ export class App extends Component {
 
   toggleMenu = () => {
     this.setState({
-      menuOpen: !this.state.menuOpen,
+      menuOpen: !this.state.menuOpen
     });
   };
 
@@ -1085,22 +292,26 @@ export class App extends Component {
             setPdf={this.setPdf}
           />
           {this.state.pdf.type.includes('pdf')
-            ? [...Array(this.state.pdf.data.numPages).keys()].map((pg) => (
+            ? [...Array(this.state.pdf.data.numPages).keys()].map(pg => (
                 <Cv
-                  setFcanvas={this.setFcanvas}
                   key={pg}
                   pg={pg + 1}
+                  setCopy={this.setCopy}
                   pdf={this.state.pdf}
                   editText={this.editText}
                   paste={this.paste}
+                  setActiveCanvas={this.setActiveCanvas}
+                  setFcArray={this.setFcArray}
                 />
               ))
             : Object.entries(this.state.pdf.data).map((pg, index) => (
                 <LoadJSON
-                  setFcanvas={this.setFcanvas}
                   key={index}
                   page={index}
                   pdf={this.state.pdf}
+                  setCopy={this.setCopy}
+                  setFcArray={this.setFcArray}
+                  setActiveCanvas={this.setActiveCanvas}
                   editText={this.editText}
                   paste={this.paste}
                 />
@@ -1112,18 +323,3 @@ export class App extends Component {
 }
 
 export default App;
-
-// import React, { useState } from 'react';
-// import SelectPDF from './SelectPDF';
-// import Sidebar from './Sidebar';
-// import Cv from './Cv';
-
-// const App = () => {
-//   const [pdf, setPdf] = useState(null);
-//   const [scale, setScale] = useState(1);
-//   const [fcanvas, setFcanvas] = useState({});
-
-//
-// };
-
-// export default App;

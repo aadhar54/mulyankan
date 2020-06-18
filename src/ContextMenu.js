@@ -1,4 +1,4 @@
-class ContextMenu {
+export default class ContextMenu {
   constructor(data) {
     this.theme = data.theme;
     this.build(data.items);
@@ -7,7 +7,7 @@ class ContextMenu {
   build(options) {
     this.menu = document.createElement('menu');
     this.menu.classList.add(`context-menu-${this.theme}`);
-    options.forEach((option) => this.buildOption(option));
+    options.forEach(option => this.buildOption(option));
     document.body.appendChild(this.menu);
   }
 
