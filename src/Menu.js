@@ -7,7 +7,7 @@ const Menu = ({ setPdf, saveAsJSON, logURLs }) => {
   const [mode, setMode] = useState(null);
   const [error, setError] = useState(false);
 
-  const prepareFile = (fileObject) => {
+  const prepareFile = fileObject => {
     console.log(fileObject.type);
     if (
       (fileObject && fileObject.type.includes('pdf')) ||
@@ -24,14 +24,14 @@ const Menu = ({ setPdf, saveAsJSON, logURLs }) => {
       reader.readAsBinaryString(file);
       reader.addEventListener('load', async () => {
         const task = pdfjsLib.getDocument({ data: reader.result });
-        task.onProgress = (progress) => {
+        task.onProgress = progress => {
           console.log(progress);
         };
-        task.promise.then((res) => {
+        task.promise.then(res => {
           setPdf({
             name: file.name,
             data: res,
-            type: file.type,
+            type: file.type
           });
         });
       });
@@ -49,13 +49,13 @@ const Menu = ({ setPdf, saveAsJSON, logURLs }) => {
         setPdf({
           name: file.name,
           data: json,
-          type: file.type,
+          type: file.type
         });
       });
     }
   };
 
-  const toggleMenu = (e) => {
+  const toggleMenu = e => {
     e.preventDefault();
     setIsOpen(!isOpen);
   };
@@ -66,7 +66,7 @@ const Menu = ({ setPdf, saveAsJSON, logURLs }) => {
     } else {
       document
         .querySelectorAll('.context-menu-pure')
-        .forEach((cm) => cm.remove());
+        .forEach(cm => cm.remove());
     }
   }, [isOpen]);
 
@@ -75,7 +75,7 @@ const Menu = ({ setPdf, saveAsJSON, logURLs }) => {
       {!isOpen ? null : (
         <div
           className="modal-close"
-          onClick={(e) => {
+          onClick={e => {
             toggleMenu(e);
             setMode(null);
           }}
@@ -84,20 +84,20 @@ const Menu = ({ setPdf, saveAsJSON, logURLs }) => {
       <input
         type="file"
         id="menu-input"
-        onChange={(e) => prepareFile(e.target.files[0])}
+        onChange={e => prepareFile(e.target.files[0])}
         style={{ display: 'none' }}
       />
       <div
         className="menu-wrapper"
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={(e) => {
+        onDragOver={e => e.preventDefault()}
+        onDrop={e => {
           e.preventDefault();
           if (mode === 'open') prepareFile(e.dataTransfer.files[0]);
         }}
       >
         <button
           className="openpdf openpdf-menu"
-          onClick={(e) => {
+          onClick={e => {
             if (mode) {
               setMode(null);
               setFile(null);
@@ -267,38 +267,3 @@ const Menu = ({ setPdf, saveAsJSON, logURLs }) => {
 };
 
 export default Menu;
-
-/*
-{!file ? (
-            <div
-              className="menu-prev"
-              onClick={() => document.querySelector('#menu-input').click()}
-            >
-              <div className="menu-text">Drag PDF here or Click to Select</div>
-              <div className="menu-shape">
-                <i className="material-icons">attachment</i>
-              </div>
-            </div>
-          ) : (
-            <div className="menu-file">
-              <div className="file-text">Selected File:</div>
-              <div className="file-title">{file.name}</div>
-              <div className="file-buttons">
-                <button className="menu-back" onClick={() => setFile(null)}>
-                  <i className="material-icons">chevron_left</i>
-                  <p>Back</p>
-                </button>
-                <button
-                  className="menu-proceed"
-                  onClick={() => {
-                    proceed();
-                    setIsOpen(false);
-                  }}
-                >
-                  <p>Proceed</p>
-                  <i className="material-icons">chevron_right</i>
-                </button>
-              </div>
-            </div>
-          )}
-*/

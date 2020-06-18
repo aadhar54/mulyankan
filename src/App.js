@@ -3,7 +3,7 @@ import SelectPDF from './SelectPDF';
 import Sidebar from './Sidebar';
 import jspdf from 'jspdf';
 import Menu from './Menu';
-import Cv from './Cv.js';
+import LoadPDF from './LoadPDF.js';
 import LoadJSON from './LoadJSON';
 
 export class App extends Component {
@@ -293,7 +293,7 @@ export class App extends Component {
           />
           {this.state.pdf.type.includes('pdf')
             ? [...Array(this.state.pdf.data.numPages).keys()].map(pg => (
-                <Cv
+                <LoadPDF
                   key={pg}
                   pg={pg + 1}
                   setCopy={this.setCopy}
