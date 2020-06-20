@@ -20,9 +20,30 @@ export class App extends Component {
       zoom: 1,
       copy: null,
       download: true,
-      menuOpen: false
+      menuOpen: false,
+      marks: 0
     };
   }
+
+  updateMarks = action => {
+    let markBoxArray = [];
+    let marks = 0;
+    console.log(this.state.fcArray);
+    this.state.fcArray.forEach(c => {
+      let markArray = c._objects.filter(o => o.textType === 'mark');
+      markBoxArray = [...markBoxArray, ...markArray];
+    });
+    markBoxArray.forEach(mb => {
+      console.log(mb.isOnScreen());
+
+      if (mb.isOnScreen() && !isNaN(mb.text)) {
+        marks += parseFloat(mb.text);
+      }
+    });
+    this.setState({
+      marks
+    });
+  };
 
   setActiveCanvas = index => {
     let sorter = (a, b) => {
@@ -291,6 +312,7 @@ export class App extends Component {
             title={this.state.pdf.name}
             setZoom={this.setZoom}
             editText={this.editText}
+            marks={this.state.marks}
           />
           <div className="main-container" id="main-container">
             <Menu
@@ -309,6 +331,8 @@ export class App extends Component {
                     paste={this.paste}
                     setActiveCanvas={this.setActiveCanvas}
                     setFcArray={this.setFcArray}
+                    updateMarks={this.updateMarks}
+                    marks={this.state.marks}
                   />
                 ))
               : Object.entries(this.state.pdf.data).map((pg, index) => (
@@ -321,6 +345,7 @@ export class App extends Component {
                     setActiveCanvas={this.setActiveCanvas}
                     editText={this.editText}
                     paste={this.paste}
+                    updateMarks={this.updateMarks}
                   />
                 ))}
           </div>

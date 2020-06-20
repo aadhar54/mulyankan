@@ -3,7 +3,7 @@
   top: 0;
   left: 0;
   width: 100vw;
-  height: 6rem;
+  height: 5rem;
   z-index: 2;
 }
 
@@ -19,7 +19,7 @@
   font-weight: bold;
   color: #2d3436;
   position: absolute;
-  top: 50%;
+  top: 60%;
   transform: translateY(-50%);
   left: 10rem;
 }
@@ -51,5 +51,5 @@
   top: 50%;
   width: 30rem;
   left: 41%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -30%);
 }

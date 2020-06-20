@@ -9,6 +9,7 @@ const LoadJSON = ({
   setFcArray,
   editText,
   paste,
+  updateMarks,
   setCopy
 }) => {
   let fcanvas,
@@ -45,6 +46,7 @@ const LoadJSON = ({
       c.renderAll();
       pauseSaving = false;
     });
+    updateMarks();
   };
 
   const redo = c => {
@@ -70,6 +72,16 @@ const LoadJSON = ({
       c.renderAll();
       pauseSaving = false;
     });
+    updateMarks();
+  };
+
+  let updateHistory = data => {
+    if (data) {
+      if (!pauseSaving) {
+        undoStack.push(data);
+        redoStack.pop();
+      }
+    }
   };
 
   const getPageAndRender = async () => {
@@ -79,21 +91,7 @@ const LoadJSON = ({
       width: img.width
     };
     console.log(fcanvas);
-    // fabric.util.enlivenObjects(pdf.data[page].objects, function (objs) {
-    //   objs.forEach((o, index) => {
-    //     if (index === 0) {
-    //       o.evented = false;
-    //       o.selectable = false;
-    //       o.hasBorders = false;
-    //       o.hasControls = false;
-    //       o.hasRotatingPoint = false;
-    //     }
-    //     o.transparentCorners = false;
-    //     o.cornerColor = '#0984e3';
-    //     o.cornerSize = 7;
-    //     fcanvas.add(o);
-    //   });
-    // });
+
     fcanvas.setDimensions({
       height: img.height,
       width: img.width
@@ -123,23 +121,27 @@ const LoadJSON = ({
         width: fcanvas.getWidth()
       };
 
-      fcanvas.on('object:added', () => {
+      fcanvas.on('object:added', e => {
         console.log(pauseSaving);
-        if (!pauseSaving) {
-          undoStack.push(fcanvas.toJSON());
-          redoStack.pop();
+        updateHistory(fcanvas.toJSON());
+
+        if (e.target.text && e.target.textType === 'mark') {
+          updateMarks();
         }
       });
       fcanvas.on('object:modified', e => {
-        if (!pauseSaving) {
-          undoStack.push(fcanvas.toJSON());
-          redoStack.pop();
+        if (!e.target.isOnScreen()) {
+          fcanvas.remove(e.target);
+          console.log('removed');
+        }
+        updateHistory(fcanvas.toJSON());
+        if (e.target.text && e.target.textType === 'mark') {
+          updateMarks();
         }
       });
-      fcanvas.on('object:removed', () => {
-        if (!pauseSaving) {
-          undoStack.push(fcanvas.toJSON());
-          redoStack.pop();
+      fcanvas.on('object:removed', e => {
+        if (e.target.text && e.target.textType === 'mark') {
+          updateMarks();
         }
       });
 
@@ -329,7 +331,61 @@ const LoadJSON = ({
 
           let id = e.dataTransfer.getData('id');
           if (id === '#text') {
-            let text = new fabric.Textbox('Text', {
+            let text = new fabric.Textbox('Enter Text Here', {
+              width: 70,
+              height: 30,
+              fontSize: 40,
+              fill: '#ff4757',
+              fireRightClick: true,
+              fontFamily: 'sans-serif',
+              transparentCorners: false,
+              cornerColor: '#0984e3',
+              cornerSize: 7
+            });
+
+            text.textType = 'text';
+
+            text.set({
+              fill: '#ff4757',
+              fontFamily: 'sans-serif',
+              top: mouseCoords ? mouseCoords.y - text.get('height') / 2 : 0,
+              left: mouseCoords ? mouseCoords.x - text.get('width') / 2 : 0
+            });
+
+            text.on('mousedown', e => {
+              if (e.button === 3) {
+                console.log('right click');
+              }
+            });
+
+            fcanvas.on('before:selection:cleared', obj => {
+              document.querySelector('.bold').style.backgroundColor = '#eee';
+              document.querySelector('.italic').style.backgroundColor = '#eee';
+              document.querySelector('.underline').style.backgroundColor =
+                '#eee';
+            });
+
+            fcanvas.on('object:selected', obj => {
+              let target = obj.target;
+              if (target.text) {
+                if (target.get('fontWeight') === 'bold') {
+                  document.querySelector('.bold').style.backgroundColor =
+                    '#ccc';
+                }
+                if (target.get('fontStyle') === 'italic') {
+                  document.querySelector('.italic').style.backgroundColor =
+                    '#ccc';
+                }
+                if (target.get('underline') === 'true') {
+                  document.querySelector('.underline').style.backgroundColor =
+                    '#ccc';
+                }
+              }
+            });
+
+            fcanvas.add(text);
+          } else if (id === '#mark') {
+            let text = new fabric.Textbox('Mark', {
               width: 30,
               height: 30,
               fontSize: 40,
@@ -353,6 +409,8 @@ const LoadJSON = ({
                 console.log('right click');
               }
             });
+
+            text.textType = 'mark';
 
             fcanvas.on('before:selection:cleared', obj => {
               document.querySelector('.bold').style.backgroundColor = '#eee';

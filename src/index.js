@@ -8,6 +8,7 @@ import './styles/index.css';
 import './styles/ContextMenu.css';
 import './styles/Menu.css';
 import './styles/Navbar.css';
+import './styles/Sidebar.css';
 
 ReactDOM.render(
   <React.StrictMode>

@@ -4,7 +4,7 @@ import Lazyload from 'react-lazy-load';
 import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
 
-const Sidebar = ({ title, setZoom, editText }) => {
+const Sidebar = ({ title, setZoom, editText, marks }) => {
   const dragStart = e => {
     e.dataTransfer.setData('id', `#${e.target.id}`);
   };
@@ -18,6 +18,7 @@ const Sidebar = ({ title, setZoom, editText }) => {
   return (
     <div className="sidebar" id="sidebar">
       <div className="divider-invisible"></div>
+      <div className="sidebar-title sidebar-sub">Marking</div>
       {/* <div className="sidebar-title sidebar-sub">Zooming</div>
       <div className="buttons-grid">
         <button className="btn" onClick={() => setZoom(1.1)}>
@@ -30,7 +31,12 @@ const Sidebar = ({ title, setZoom, editText }) => {
           <i className="material-icons">refresh</i>
         </button>
       </div> */}
-      <div className="sidebar-title sidebar-sub">Marking</div>
+      <div className="marking-grid">
+        <div className="calc-marks">{marks}</div>
+        <span className="marks-separator">out of</span>
+        <input type="text" className="total-marks" />
+      </div>
+
       <div className="divider"></div>
       <div className="sidebar-title sidebar-sub">Corrections</div>
       <div className="icons-grid">
@@ -87,14 +93,33 @@ const Sidebar = ({ title, setZoom, editText }) => {
         draggable="true"
       >
         <p onDragStart={dragStart} id="text">
-          Drag onto page to add text box
+          Drag Text Box
         </p>
         <Lazyload>
           <img
             onDragStart={dragStart}
             id="text"
-            className="image-icon"
+            className="image-icon image-icon-text"
             src="./images/text.png"
+            alt="Textbox"
+          />
+        </Lazyload>
+      </div>
+      <div
+        className="text-btn"
+        onDragStart={dragStart}
+        id="mark"
+        draggable="true"
+      >
+        <p onDragStart={dragStart} id="mark">
+          Drag Mark Box
+        </p>
+        <Lazyload>
+          <img
+            onDragStart={dragStart}
+            id="mark"
+            className="image-icon image-icon-text"
+            src="./images/markbox.png"
             alt="Textbox"
           />
         </Lazyload>

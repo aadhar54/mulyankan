@@ -1,0 +1,125 @@
+.sidebar {
+  position: fixed;
+  bottom: 0;
+  z-index: 1;
+  right: 0;
+  width: 20%;
+  height: calc(100% - 7rem);
+  overflow-y: scroll;
+}
+
+#sidebar::-webkit-scrollbar {
+  width: 5px;
+  background: #ccc;
+}
+
+#sidebar::-webkit-scrollbar-button {
+  display: none;
+}
+
+#sidebar::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 100rem;
+}
+
+.buttons-grid {
+  width: 90%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.buttons-grid > button {
+  padding: 1rem 2rem;
+  font-size: 2rem;
+  margin: 2px 2px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.buttons-grid-fsize {
+  grid-template-columns: 1fr 5fr 1fr;
+}
+
+.buttons-grid-fsize > button {
+  padding: 0.5rem 0.5rem;
+  font-size: 1rem;
+  margin: 0.5rem 0.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.sidebar-title {
+  font-size: 2rem;
+  margin: 0 auto;
+  margin-top: 1.5rem;
+  width: 90%;
+  text-transform: capitalize;
+  font-weight: bold;
+  text-align: left;
+}
+
+.icons-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 90%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.image-icon {
+  width: 40px;
+  margin: 2px auto;
+  background-color: #eee;
+  padding: 1rem 3rem;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.marking-grid {
+  padding: 1rem;
+  margin: 2px 2px;
+  border-radius: 5px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 65%;
+  margin: auto auto;
+  background-color: #eee;
+  font-weight: bold;
+  font-size: 4rem;
+}
+
+.calc-marks {
+  margin: auto auto;
+  font-size: 2rem;
+}
+
+.marks-separator {
+  margin: auto 0;
+  font-size: 2rem;
+}
+
+.total-marks {
+  margin: auto auto;
+  width: 80%;
+  border-radius: 5px;
+  padding: 1rem;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.sidebar-sub {
+  text-align: left;
+  display: block;
+  width: 90%;
+  margin: 1rem auto;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.image-icon-text {
+  width: 30px;
+  margin: auto auto;
+  padding: 0.5rem;
+}
