@@ -107,7 +107,9 @@ const Menu = ({ setPdf, saveAsJSON, logURLs }) => {
           }}
         >
           <i
-            style={{ color: isOpen ? '#f0932b' : '#2d3436' }}
+            style={{
+              color: isOpen ? '#ffffff' : '#2d3436'
+            }}
             className="material-icons"
           >
             {mode ? 'arrow_back' : 'menu'}

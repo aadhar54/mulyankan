@@ -5,7 +5,7 @@ import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
 
 const Sidebar = ({ title, setZoom, editText }) => {
-  const dragStart = (e) => {
+  const dragStart = e => {
     e.dataTransfer.setData('id', `#${e.target.id}`);
   };
 
@@ -17,9 +17,8 @@ const Sidebar = ({ title, setZoom, editText }) => {
 
   return (
     <div className="sidebar" id="sidebar">
-      <div className="sidebar-title">{title}</div>
-      <hr className="divider" />
-      <div className="sidebar-title sidebar-sub">Zooming</div>
+      <div className="divider-invisible"></div>
+      {/* <div className="sidebar-title sidebar-sub">Zooming</div>
       <div className="buttons-grid">
         <button className="btn" onClick={() => setZoom(1.1)}>
           <i className="material-icons">add_circle_outline</i>
@@ -30,8 +29,9 @@ const Sidebar = ({ title, setZoom, editText }) => {
         <button onClick={() => setZoom(0.9, true)}>
           <i className="material-icons">refresh</i>
         </button>
-      </div>
-      <hr className="divider" />
+      </div> */}
+      <div className="sidebar-title sidebar-sub">Marking</div>
+      <div className="divider"></div>
       <div className="sidebar-title sidebar-sub">Corrections</div>
       <div className="icons-grid">
         <Lazyload>
@@ -78,7 +78,7 @@ const Sidebar = ({ title, setZoom, editText }) => {
           />
         </Lazyload>
       </div>
-      <hr className="divider" />
+      <div className="divider"></div>
       <div className="sidebar-title sidebar-sub">Text</div>
       <div
         className="text-btn"
@@ -132,7 +132,7 @@ const Sidebar = ({ title, setZoom, editText }) => {
             max={100}
             value={sliderValue}
             orientation="horizontal"
-            onChange={(v) => setSliderVaue(v)}
+            onChange={v => setSliderVaue(v)}
           />
         </div>
 
@@ -145,7 +145,7 @@ const Sidebar = ({ title, setZoom, editText }) => {
       </div>
       <div className="text-color">
         <CirclePicker
-          onChange={(color) => editText('fill', color.hex)}
+          onChange={color => editText('fill', color.hex)}
           width="100%"
           style={{ margin: '0' }}
           colors={[
@@ -158,7 +158,7 @@ const Sidebar = ({ title, setZoom, editText }) => {
             '#6c5ce7',
             '#fd79a8',
             '#747d8c',
-            '#000000',
+            '#000000'
           ]}
         />
       </div>

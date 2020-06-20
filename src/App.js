@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
-import SelectPDF from './SelectPDF';
-import Sidebar from './Sidebar';
+import SelectPDF from './js/layouts/SelectPDF';
 import jspdf from 'jspdf';
-import Menu from './Menu';
-import LoadPDF from './LoadPDF.js';
-import LoadJSON from './LoadJSON';
+
+// LAYOUTS
+import LoadPDF from './js/layouts/LoadPDF.js';
+import LoadJSON from './js/layouts/LoadJSON';
+
+// COMPONENTS
+import Sidebar from './js/components/Sidebar';
+import Menu from './js/components/Menu';
+import Navbar from './js/components/Navbar';
 
 export class App extends Component {
   constructor() {
@@ -277,47 +282,50 @@ export class App extends Component {
     return !this.state.pdf ? (
       <SelectPDF setPdf={this.setPdf} />
     ) : (
-      <main>
-        <Sidebar
-          addText={this.addText}
-          logURLs={this.logURLs}
-          title={this.state.pdf.name}
-          setZoom={this.setZoom}
-          editText={this.editText}
-        />
-        <div className="main-container" id="main-container">
-          <Menu
+      <div>
+        <Navbar file={this.state.pdf} setZoom={this.setZoom} />
+        <main>
+          <Sidebar
+            addText={this.addText}
             logURLs={this.logURLs}
-            saveAsJSON={this.saveAsJSON}
-            setPdf={this.setPdf}
+            title={this.state.pdf.name}
+            setZoom={this.setZoom}
+            editText={this.editText}
           />
-          {this.state.pdf.type.includes('pdf')
-            ? [...Array(this.state.pdf.data.numPages).keys()].map(pg => (
-                <LoadPDF
-                  key={pg}
-                  pg={pg + 1}
-                  setCopy={this.setCopy}
-                  pdf={this.state.pdf}
-                  editText={this.editText}
-                  paste={this.paste}
-                  setActiveCanvas={this.setActiveCanvas}
-                  setFcArray={this.setFcArray}
-                />
-              ))
-            : Object.entries(this.state.pdf.data).map((pg, index) => (
-                <LoadJSON
-                  key={index}
-                  page={index}
-                  pdf={this.state.pdf}
-                  setCopy={this.setCopy}
-                  setFcArray={this.setFcArray}
-                  setActiveCanvas={this.setActiveCanvas}
-                  editText={this.editText}
-                  paste={this.paste}
-                />
-              ))}
-        </div>
-      </main>
+          <div className="main-container" id="main-container">
+            <Menu
+              logURLs={this.logURLs}
+              saveAsJSON={this.saveAsJSON}
+              setPdf={this.setPdf}
+            />
+            {this.state.pdf.type.includes('pdf')
+              ? [...Array(this.state.pdf.data.numPages).keys()].map(pg => (
+                  <LoadPDF
+                    key={pg}
+                    pg={pg + 1}
+                    setCopy={this.setCopy}
+                    pdf={this.state.pdf}
+                    editText={this.editText}
+                    paste={this.paste}
+                    setActiveCanvas={this.setActiveCanvas}
+                    setFcArray={this.setFcArray}
+                  />
+                ))
+              : Object.entries(this.state.pdf.data).map((pg, index) => (
+                  <LoadJSON
+                    key={index}
+                    page={index}
+                    pdf={this.state.pdf}
+                    setCopy={this.setCopy}
+                    setFcArray={this.setFcArray}
+                    setActiveCanvas={this.setActiveCanvas}
+                    editText={this.editText}
+                    paste={this.paste}
+                  />
+                ))}
+          </div>
+        </main>
+      </div>
     );
   }
 }

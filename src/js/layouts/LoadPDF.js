@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import ContextMenu from './ContextMenu.js';
+import ContextMenu from '../components/ContextMenu.js';
 const fabric = require('fabric').fabric;
 
 const Cv = ({
