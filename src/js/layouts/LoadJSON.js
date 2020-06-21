@@ -46,7 +46,7 @@ const LoadJSON = ({
       c.renderAll();
       pauseSaving = false;
     });
-    updateMarks();
+    updateMarks('undo');
   };
 
   const redo = c => {
@@ -72,7 +72,7 @@ const LoadJSON = ({
       c.renderAll();
       pauseSaving = false;
     });
-    updateMarks();
+    updateMarks('redo');
   };
 
   let updateHistory = data => {
@@ -130,16 +130,7 @@ const LoadJSON = ({
         }
       });
       fcanvas.on('object:modified', e => {
-        if (!e.target.isOnScreen()) {
-          fcanvas.remove(e.target);
-          console.log('removed');
-        }
         updateHistory(fcanvas.toJSON());
-        if (e.target.text && e.target.textType === 'mark') {
-          updateMarks();
-        }
-      });
-      fcanvas.on('object:removed', e => {
         if (e.target.text && e.target.textType === 'mark') {
           updateMarks();
         }

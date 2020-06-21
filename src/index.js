@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import App from './js/App';
 import * as serviceWorker from './serviceWorker';
 
 // STYLES
@@ -9,6 +9,8 @@ import './styles/ContextMenu.css';
 import './styles/Menu.css';
 import './styles/Navbar.css';
 import './styles/Sidebar.css';
+import './styles/Welcome.css';
+import './styles/Help.css';
 
 ReactDOM.render(
   <React.StrictMode>

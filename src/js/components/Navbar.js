@@ -1,5 +1,6 @@
 import React from 'react';
 import Sugar from 'sugar';
+import { Link } from 'react-router-dom';
 
 const Navbar = ({ file, setZoom }) => {
   const fileName = Sugar.String(file.name);
@@ -22,7 +23,15 @@ const Navbar = ({ file, setZoom }) => {
           </div>
         </div>
         <div className="navbar__saving">Saving...</div>
-        <div className="navbar__help">Help</div>
+        <Link className="help-link" to="/help" style={{ display: 'none' }}>
+          help
+        </Link>
+        <div
+          className="navbar__help"
+          onClick={() => document.querySelector('.help-link').click()}
+        >
+          Help
+        </div>
       </div>
     </div>
   );

@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
-import SelectPDF from './js/layouts/SelectPDF';
+import SelectPDF from './Welcome';
 import jspdf from 'jspdf';
 
 // LAYOUTS
-import LoadPDF from './js/layouts/LoadPDF.js';
-import LoadJSON from './js/layouts/LoadJSON';
+import LoadPDF from './LoadPDF.js';
+import LoadJSON from './LoadJSON';
 
 // COMPONENTS
-import Sidebar from './js/components/Sidebar';
-import Menu from './js/components/Menu';
-import Navbar from './js/components/Navbar';
+import Sidebar from '../components/Sidebar';
+import Menu from '../components/Menu';
+import Navbar from '../components/Navbar';
 
-export class App extends Component {
+export class Home extends Component {
   constructor() {
     super();
     this.state = {
@@ -355,4 +355,4 @@ export class App extends Component {
   }
 }
 
-export default App;
+export default Home;

@@ -123,3 +123,27 @@
   margin: auto auto;
   padding: 0.5rem;
 }
+
+.copyright {
+  color: #636e72;
+  font-size: 2rem;
+  font-weight: bold;
+  width: 90%;
+  text-align: justify;
+  margin: 0 auto;
+}
+
+.text-btn {
+  font-size: 2rem;
+  background-color: #eee;
+  width: 90%;
+  margin: 1rem auto;
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.text-btn > p {
+  font-size: 2rem;
+  margin: auto auto;
+}

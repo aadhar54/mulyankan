@@ -127,7 +127,7 @@ const Menu = ({ setPdf, saveAsJSON, logURLs }) => {
                 <p>Save As</p>
               </div>
               <div onClick={() => setMode('download')} className="menu-option">
-                <i className="material-icons">vertical_align_bottom</i>
+                <i className="material-icons">file_download</i>
                 <p>Download</p>
               </div>
             </div>
