@@ -1,8 +1,29 @@
 import React, { useState } from 'react';
 import Sugar from 'sugar';
+import firebase from 'firebase/app';
+import 'firebase/storage';
+import { Howl, Howler } from 'howler';
 
 const Music = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [playing, setPlaying] = useState(false);
+
+  const play = async url => {
+    const storage = firebase.storage();
+    let ref = storage.refFromURL(url);
+    let res = await ref.getDownloadURL();
+    ref.getDownloadURL().then(url => {
+      console.log(res);
+      let track = new Howl({
+        src: res,
+        autoplay: true
+      });
+      track.once('load', () => {
+        track.play();
+        setPlaying(true);
+      });
+    });
+  };
 
   const toggleMusic = e => {
     e.preventDefault();
@@ -13,20 +34,9 @@ const Music = () => {
 
   const tracks = [
     {
-      name: Sugar.String('Show me the meaning of being lonely').truncate(
-        nameLength
-      ).raw,
-      url: '#'
-    },
-    {
-      name: Sugar.String('I want it that way').truncate(nameLength).raw,
-      url: '#'
-    },
-    {
-      name: Sugar.String('Love of my Life').truncate(nameLength).raw,
-      url: '#'
-    },
-    { name: Sugar.String('Roja').truncate(nameLength).raw, url: '#' }
+      name: Sugar.String('Roja Instrumental').truncate(nameLength).raw,
+      url: 'gs://mulyankan-58611.appspot.com/Roja Instrumental.mp3'
+    }
   ];
 
   return (
@@ -48,7 +58,11 @@ const Music = () => {
         </button>
         <div className={`music ${isOpen ? 'music-visible' : ''}`}>
           {tracks.map((track, index) => (
-            <div key={index} className="music-option">
+            <div
+              onClick={() => play(track.url)}
+              key={index}
+              className="music-option"
+            >
               <i className="material-icons">play_circle_outline</i>
               <p>{track.name}</p>
             </div>
