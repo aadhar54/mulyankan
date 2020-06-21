@@ -11,6 +11,7 @@ import './styles/Navbar.css';
 import './styles/Sidebar.css';
 import './styles/Welcome.css';
 import './styles/Help.css';
+import './styles/Music.css';
 
 ReactDOM.render(
   <React.StrictMode>
