@@ -91,24 +91,48 @@ export class Home extends Component {
     if (this.state.copy) {
       if (this.state.copy.text) {
         let copy = this.state.copy;
-
-        copy.clone(cp => {
-          cp.set({
-            width: copy.width,
-            height: copy.height,
-            fontSize: copy.get('fontSize'),
-            fill: copy.get('fill'),
-            fireRightClick: true,
-            fontFamily: 'sans-serif',
-            transparentCorners: false,
-            cornerColor: '#0984e3',
-            cornerSize: 7,
-            top: coords.y ? coords.y - cp.get('height') / 2 : 0,
-            left: coords.x ? coords.x - cp.get('width') / 2 : 0
+        if (this.state.copy.textType === 'mark') {
+          console.log('ok');
+          copy.clone(cp => {
+            cp.set({
+              width: copy.width,
+              height: copy.height,
+              fontSize: copy.get('fontSize'),
+              fill: copy.get('fill'),
+              fireRightClick: true,
+              fontFamily: 'sans-serif',
+              transparentCorners: false,
+              cornerColor: '#0984e3',
+              cornerSize: 7,
+              top: coords.y ? coords.y - cp.get('height') / 2 : 0,
+              left: coords.x ? coords.x - cp.get('width') / 2 : 0
+            });
+            cp.textType = 'mark';
+            canvas.add(cp);
+            cp.setCoords();
+            this.updateMarks();
           });
-          canvas.add(cp);
-          cp.setCoords();
-        });
+        } else {
+          copy.clone(cp => {
+            cp.set({
+              width: copy.width,
+              height: copy.height,
+              fontSize: copy.get('fontSize'),
+              fill: copy.get('fill'),
+              fireRightClick: true,
+              fontFamily: 'sans-serif',
+              transparentCorners: false,
+              cornerColor: '#0984e3',
+              cornerSize: 7,
+              top: coords.y ? coords.y - cp.get('height') / 2 : 0,
+              left: coords.x ? coords.x - cp.get('width') / 2 : 0
+            });
+            cp.textType = 'text';
+            canvas.add(cp);
+            cp.setCoords();
+            this.updateMarks();
+          });
+        }
       } else {
         this.state.copy.clone(cp => {
           let copy = this.state.copy;
@@ -129,6 +153,7 @@ export class Home extends Component {
         });
       }
     }
+    this.updateMarks();
   };
 
   setPdf = pdf => {

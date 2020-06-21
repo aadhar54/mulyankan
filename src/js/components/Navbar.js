@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 const Navbar = ({ file, setZoom }) => {
   const fileName = Sugar.String(file.name);
-  const displayName = fileName.truncate(20).raw;
+  const displayName = fileName.truncate(15).raw;
   return (
     <div className="navbar">
       <div className="navbar-wrapper">
