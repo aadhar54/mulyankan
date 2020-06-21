@@ -172,7 +172,6 @@ const Sidebar = ({ title, setZoom, editText, marks }) => {
         <CirclePicker
           onChange={color => editText('fill', color.hex)}
           width="100%"
-          style={{ margin: '0' }}
           colors={[
             '#2ecc71',
             '#ff4757',

@@ -147,3 +147,11 @@
   font-size: 2rem;
   margin: auto auto;
 }
+
+.text-color {
+  width: 90%;
+  margin: 0 auto;
+  margin-top: 2rem;
+  text-align: center;
+  position: relative;
+}
