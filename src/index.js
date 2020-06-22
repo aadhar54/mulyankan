@@ -12,7 +12,6 @@ import './styles/Navbar.css';
 import './styles/Sidebar.css';
 import './styles/Welcome.css';
 import './styles/Help.css';
-import './styles/Music.css';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCVmoFHsKitugdpAC_-_5cSagm2A-U33WM',

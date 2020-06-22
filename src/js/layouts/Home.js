@@ -9,7 +9,6 @@ import LoadJSON from './LoadJSON';
 // COMPONENTS
 import Sidebar from '../components/Sidebar';
 import Menu from '../components/Menu';
-import Music from './../components/Music';
 import Navbar from '../components/Navbar';
 
 export class Home extends Component {
@@ -349,7 +348,6 @@ export class Home extends Component {
               saveAsJSON={this.saveAsJSON}
               setPdf={this.setPdf}
             />
-            <Music />
             {this.state.pdf.type.includes('pdf')
               ? [...Array(this.state.pdf.data.numPages).keys()].map(pg => (
                   <LoadPDF

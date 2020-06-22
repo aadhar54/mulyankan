@@ -34,6 +34,7 @@ const WelcomeNav = ({ active }) => {
           >
             Help
           </li>
+          {/* <li className="welcome-nav-item">{user ? 'sign Out' : 'Sign In'}</li> */}
         </ul>
       </nav>
     </div>
