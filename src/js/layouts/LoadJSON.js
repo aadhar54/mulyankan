@@ -136,6 +136,12 @@ const LoadJSON = ({
         }
       });
 
+      fcanvas.on('text:changed', e => {
+        if (e.target.text && e.target.textType === 'mark') {
+          updateMarks();
+        }
+      });
+
       fcanvas.on('mouse:down', e => {
         setActiveCanvas(fcanvas.index);
         let pointerLocation = fcanvas.getPointer(e.e);
@@ -143,7 +149,7 @@ const LoadJSON = ({
         if (!document.querySelector('.context-menu-pure')) {
           if (e.button === 3) {
             let menu = new ContextMenu({
-              theme: 'pure', // or 'blue'
+              theme: 'pure',
               items: [
                 {
                   icon: 'content_copy',
@@ -199,6 +205,17 @@ const LoadJSON = ({
                   action: () => {
                     redo(fcanvas);
                     console.log('redo');
+                    document
+                      .querySelectorAll('.context-menu-pure')
+                      .forEach(cm => cm.remove());
+                  }
+                },
+                {
+                  icon: 'delete',
+                  name: 'Remove',
+                  action: () => {
+                    updateHistory(fcanvas.toJSON());
+                    fcanvas.remove(fcanvas._activeObject);
                     document
                       .querySelectorAll('.context-menu-pure')
                       .forEach(cm => cm.remove());

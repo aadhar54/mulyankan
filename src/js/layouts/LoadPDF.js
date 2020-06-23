@@ -105,6 +105,12 @@ const Cv = ({
       }
     });
 
+    fc.on('text:changed', e => {
+      if (e.target.text && e.target.textType === 'mark') {
+        updateMarks();
+      }
+    });
+
     fc.on('drop', e => {
       setActiveCanvas(fc.index);
       let pointerLocation = fc.getPointer(e.e);
@@ -170,6 +176,17 @@ const Cv = ({
                 action: () => {
                   redo(fc);
                   console.log('redo');
+                  document
+                    .querySelectorAll('.context-menu-pure')
+                    .forEach(cm => cm.remove());
+                }
+              },
+              {
+                icon: 'delete',
+                name: 'Remove',
+                action: () => {
+                  updateHistory(fc.toJSON());
+                  fc.remove(fc._activeObject);
                   document
                     .querySelectorAll('.context-menu-pure')
                     .forEach(cm => cm.remove());
