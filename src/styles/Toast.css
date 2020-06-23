@@ -1,0 +1,19 @@
+.Toastify__toast-body {
+  font-size: 2rem;
+  color: #fff;
+}
+
+.Toastify__toast {
+  background-color: #2d3436;
+  border-radius: 10px;
+  min-height: 50px;
+  width: 400px;
+}
+
+.Toastify__close-button {
+  color: #fff;
+}
+
+.Toastify__progress-bar {
+  background: transparent;
+}

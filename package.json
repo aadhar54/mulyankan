@@ -20,6 +20,7 @@
     "react-rangeslider": "^2.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
+    "react-toastify": "^6.0.6",
     "react-truncate": "^2.4.0",
     "sugar": "^2.0.6"
   },

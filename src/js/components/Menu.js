@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const pdfjsLib = window['pdfjs-dist/build/pdf'];
 
 const Menu = ({ setPdf, saveAsJSON, logURLs }) => {
@@ -6,6 +8,8 @@ const Menu = ({ setPdf, saveAsJSON, logURLs }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [mode, setMode] = useState(null);
   const [error, setError] = useState(false);
+
+  const notify = text => toast(text);
 
   const prepareFile = fileObject => {
     console.log(fileObject.type);
@@ -202,6 +206,7 @@ const Menu = ({ setPdf, saveAsJSON, logURLs }) => {
                   onClick={() => {
                     if (document.querySelector('.save-name').value) {
                       saveAsJSON(document.querySelector('.save-name').value);
+                      notify('File has been saved.');
                       setIsOpen(false);
                       setMode(null);
                       setError(false);
@@ -248,6 +253,7 @@ const Menu = ({ setPdf, saveAsJSON, logURLs }) => {
                   onClick={() => {
                     if (document.querySelector('.save-name').value) {
                       logURLs(document.querySelector('.save-name').value);
+                      notify('File has been downloaded.');
                       setIsOpen(false);
                       setMode(null);
                       setError(false);
