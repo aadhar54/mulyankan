@@ -1,13 +1,15 @@
 .Toastify__toast-body {
   font-size: 2rem;
+  font-family: 'Montserrat';
   color: #fff;
 }
 
 .Toastify__toast {
   background-color: #2d3436;
+  padding: 1rem 2rem;
   border-radius: 10px;
   min-height: 50px;
-  width: 400px;
+  width: 500px;
 }
 
 .Toastify__close-button {
@@ -15,5 +17,25 @@
 }
 
 .Toastify__progress-bar {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.Toastify__toast--error {
+  background-color: #e74c3c;
+  border-radius: 10px;
+  min-height: 50px;
+  width: 500px;
+}
+.Toastify__toast--success {
+  background-color: #2ecc71;
+  border-radius: 10px;
+  min-height: 50px;
+  width: 500px;
+}
+
+.Toastify__toast--warning {
+  background-color: #f39c12;
+  border-radius: 10px;
+  min-height: 50px;
+  width: 500px;
 }

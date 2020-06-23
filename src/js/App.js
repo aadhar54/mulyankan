@@ -1,15 +1,17 @@
 import React from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import Home from './layouts/Home';
 import Help from './layouts/Help';
-import { ToastContainer } from 'react-toastify';
+import Auth from './layouts/Auth';
 
 const App = () => {
   return (
     <BrowserRouter>
       <Route exact path="/" component={Home} />
       <Route path="/help" component={Help} />
-      <ToastContainer autoClose={5000} position="bottom-left" />
+      <Route path="/auth" component={Auth} />
+      <ToastContainer autoClose={3000} position="bottom-left" />
     </BrowserRouter>
   );
 };

@@ -9,7 +9,7 @@ const Menu = ({ setPdf, saveAsJSON, logURLs }) => {
   const [mode, setMode] = useState(null);
   const [error, setError] = useState(false);
 
-  const notify = text => toast(text);
+  const notify = text => toast.success(text);
 
   const prepareFile = fileObject => {
     console.log(fileObject.type);

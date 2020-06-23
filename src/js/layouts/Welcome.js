@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import WelcomeNav from './../components/WelcomeNav';
 const pdfjsLib = window['pdfjs-dist/build/pdf'];
 
+const auth = firebase.auth();
+
 const SelectPDF = ({ setPdf }) => {
   const [file, setFile] = useState(null);
-
+  const [user, loading, error] = useAuthState(auth);
   const prepareFile = fileObject => {
     console.log(fileObject.type);
     if (
@@ -124,7 +129,12 @@ const SelectPDF = ({ setPdf }) => {
               </div>
             </div>
           </div>
-          <div className="welcome-tutorial"></div>
+          <div className="online-files">
+            <i className="material-icons">new_releases</i>
+            <p className="cloud-coming-soon">
+              Feature to save files to the cloud will be available soon!
+            </p>
+          </div>
         </div>
       </div>
     </div>
