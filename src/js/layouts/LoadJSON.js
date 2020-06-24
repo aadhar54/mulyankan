@@ -137,7 +137,7 @@ const LoadJSON = ({
       });
 
       fcanvas.on('text:changed', e => {
-        if (e.target.text && e.target.textType === 'mark') {
+        if (e.target.textType === 'mark') {
           updateMarks();
         }
       });

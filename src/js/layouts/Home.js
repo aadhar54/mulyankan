@@ -34,10 +34,16 @@ export class Home extends Component {
       markBoxArray = [...markBoxArray, ...markArray];
     });
     markBoxArray.forEach(mb => {
-      console.log(mb.isOnScreen());
+      console.log(mb);
 
-      if (mb.isOnScreen() && !isNaN(mb.text)) {
-        marks += parseFloat(mb.text);
+      if (mb.isOnScreen()) {
+        let toAddMark = !isNaN(mb.text) ? mb.text : '0';
+        console.log(typeof toAddMark);
+        if (toAddMark === '') {
+          marks += parseFloat('0');
+        } else {
+          marks += parseFloat(mb.text);
+        }
       }
     });
     this.setState({
