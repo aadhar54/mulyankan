@@ -1,11 +1,11 @@
 import React from 'react';
 import WelcomeNav from './../components/WelcomeNav';
 
-const Help = () => {
+const Help = ({ mode }) => {
   return (
     <div className="help">
       <div className="help-container">
-        <WelcomeNav active="help" />
+        <WelcomeNav active="help" mode={mode} />
         <div className="help-contents">
           <div className="help-sidebar">
             {/* <ul className="help-sidebar-list">

@@ -7,9 +7,10 @@ const pdfjsLib = window['pdfjs-dist/build/pdf'];
 
 const auth = firebase.auth();
 
-const SelectPDF = ({ setPdf }) => {
+const SelectPDF = ({ setPdf, mode }) => {
   const [file, setFile] = useState(null);
   const [user, loading, error] = useAuthState(auth);
+
   const prepareFile = fileObject => {
     console.log(fileObject.type);
     if (
@@ -68,7 +69,7 @@ const SelectPDF = ({ setPdf }) => {
       }}
     >
       <div className="welcome-container">
-        <WelcomeNav active="home" />
+        <WelcomeNav active="home" mode={mode} />
         <div className="welcome-contents">
           <div className="welcome-select-pdf">
             <div

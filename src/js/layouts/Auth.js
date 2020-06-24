@@ -8,12 +8,11 @@ import { Redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const auth = firebase.auth();
-const Auth = () => {
+const Auth = ({ mode, setMode }) => {
   const [user, loading, error] = useAuthState(auth);
   const [visibility, setVisibility] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [mode, setMode] = useState('signin');
   const [password, setPassword] = useState('');
 
   const signIn = e => {

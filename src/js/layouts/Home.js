@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import SelectPDF from './Welcome';
+import Welcome from './Welcome';
 import jspdf from 'jspdf';
 
 // LAYOUTS
@@ -12,7 +12,7 @@ import Menu from '../components/Menu';
 import Navbar from '../components/Navbar';
 
 export class Home extends Component {
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
       pdf: null,
@@ -329,7 +329,7 @@ export class Home extends Component {
       return false;
     };
     return !this.state.pdf ? (
-      <SelectPDF setPdf={this.setPdf} />
+      <Welcome mode={this.props.mode} setPdf={this.setPdf} />
     ) : (
       <div>
         <Navbar file={this.state.pdf} setZoom={this.setZoom} />

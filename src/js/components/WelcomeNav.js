@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import firebase from 'firebase/app';
 import 'firebase/auth';
@@ -20,6 +20,9 @@ const auth = firebase.auth();
 
 const WelcomeNav = ({ active, mode }) => {
   const [user, loading, error] = useAuthState(auth);
+  useEffect(() => {
+    console.log(mode);
+  }, [mode]);
 
   return (
     <div className="welcome-nav-wrapper">

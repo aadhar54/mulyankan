@@ -161,13 +161,15 @@
   margin: auto 0;
   border-radius: 10px;
   position: relative;
-  display: grid;
-  grid-template-columns: 1fr 2fr;
 }
 
 .online-files > i {
-  margin: auto auto;
-  font-size: 10rem;
+  position: absolute;
+  top: 0;
+  left: 70%;
+  transform: translateX(-50%);
+  font-size: 7rem;
+  color: #38ada9;
 }
 
 .cloud-coming-soon {
