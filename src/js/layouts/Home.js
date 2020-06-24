@@ -37,9 +37,9 @@ export class Home extends Component {
       console.log(mb);
 
       if (mb.isOnScreen()) {
-        let toAddMark = !isNaN(mb.text) ? mb.text : '0';
-        console.log(typeof toAddMark);
-        if (toAddMark === '') {
+        let toAddMark = isNaN(mb.text) ? mb.text : 0;
+
+        if (toAddMark === '' || isNaN(parseFloat(mb.text))) {
           marks += parseFloat('0');
         } else {
           marks += parseFloat(mb.text);
