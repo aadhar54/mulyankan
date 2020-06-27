@@ -23,8 +23,7 @@ In fact, if you want to use it witout an internet connection, you can download M
 
 ## Why should I use it ?
 &nbsp;
-- **Easy and Intuitive drag and drop interface:** _Who ever said checking papers online has to be harder than real life ?
-_
+- **Easy and Intuitive drag and drop interface:** _Who ever said checking papers online has to be harder than real life ?_
 - **Add ✅  ,  ❌  , 💯:** _Never compromise with a student. Point their mistakes and appreciate their efforts with essential symbols_
 - **Download Checked PDF:** _Yep! You can open, edit and Download the PDF - all for free!_
 - **Save and Work Later:** _Who knows, maybe your kid fell down or you gotta go get coffee.. No worries, you can save your work as JSON and work on it later - Just like nothing happened!_
