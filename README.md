@@ -13,6 +13,12 @@ I made this app as teachers face many problems when checking students' exam pape
 ## How to use it ?
 You can simply go to <a href="https://mulyankan.netlify.app">this link</a>, upload a students PDF file and get started with the checking! It's very intuitive and you can add ticks, crosses, marks and everything you might need to check a paper. You can also download it as a PDF or save it as a JSON file and continue working on it later.
   
+In fact, if you want to use it witout an internet connection, you can download Mulyankan Desktop for Windows, Mac and Linux below:
+
+- Windows: https://github.com/skadewdle/mulyankan/raw/desktop/installers/Mulyankan%20Desktop%20-%20Windows.exe 
+- Mac: *Coming Soon*
+- Linux: *Coming Soon* 
+  
 &nbsp;
 
 ## Why should I use it ?
