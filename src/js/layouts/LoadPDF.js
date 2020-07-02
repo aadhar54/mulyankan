@@ -174,27 +174,27 @@ const Cv = ({
                     .forEach(cm => cm.remove());
                 }
               },
-              {
-                icon: 'undo',
-                name: 'Undo',
-                action: () => {
-                  undo(fc);
-                  document
-                    .querySelectorAll('.context-menu-pure')
-                    .forEach(cm => cm.remove());
-                }
-              },
-              {
-                icon: 'redo',
-                name: 'Redo',
-                action: () => {
-                  redo(fc);
-                  console.log('redo');
-                  document
-                    .querySelectorAll('.context-menu-pure')
-                    .forEach(cm => cm.remove());
-                }
-              },
+              // {
+              //   icon: 'undo',
+              //   name: 'Undo',
+              //   action: () => {
+              //     undo(fc);
+              //     document
+              //       .querySelectorAll('.context-menu-pure')
+              //       .forEach(cm => cm.remove());
+              //   }
+              // },
+              // {
+              //   icon: 'redo',
+              //   name: 'Redo',
+              //   action: () => {
+              //     redo(fc);
+              //     console.log('redo');
+              //     document
+              //       .querySelectorAll('.context-menu-pure')
+              //       .forEach(cm => cm.remove());
+              //   }
+              // },
               {
                 icon: 'delete',
                 name: 'Remove',

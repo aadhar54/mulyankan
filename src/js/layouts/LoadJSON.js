@@ -202,27 +202,27 @@ const LoadJSON = ({
                       .forEach(cm => cm.remove());
                   }
                 },
-                {
-                  icon: 'undo',
-                  name: 'Undo',
-                  action: () => {
-                    undo(fcanvas);
-                    document
-                      .querySelectorAll('.context-menu-pure')
-                      .forEach(cm => cm.remove());
-                  }
-                },
-                {
-                  icon: 'redo',
-                  name: 'Redo',
-                  action: () => {
-                    redo(fcanvas);
-                    console.log('redo');
-                    document
-                      .querySelectorAll('.context-menu-pure')
-                      .forEach(cm => cm.remove());
-                  }
-                },
+                // {
+                //   icon: 'undo',
+                //   name: 'Undo',
+                //   action: () => {
+                //     undo(fcanvas);
+                //     document
+                //       .querySelectorAll('.context-menu-pure')
+                //       .forEach(cm => cm.remove());
+                //   }
+                // },
+                // {
+                //   icon: 'redo',
+                //   name: 'Redo',
+                //   action: () => {
+                //     redo(fcanvas);
+                //     console.log('redo');
+                //     document
+                //       .querySelectorAll('.context-menu-pure')
+                //       .forEach(cm => cm.remove());
+                //   }
+                // },
                 {
                   icon: 'delete',
                   name: 'Remove',

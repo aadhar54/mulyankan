@@ -29,7 +29,7 @@ const Navbar = ({ file, setZoom }) => {
             </button>
           </div>
         </div>
-        <div className="navbar__saving">Saving...</div>
+        {/* <div className="navbar__saving">Saving...</div> */}
         <Link className="help-link" to="/help" style={{ display: 'none' }}>
           help
         </Link>
