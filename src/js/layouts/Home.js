@@ -21,9 +21,20 @@ export class Home extends Component {
       copy: null,
       download: true,
       menuOpen: false,
-      marks: 0
+      marks: 0,
+      panning: false
     };
   }
+
+  setPanning = value => {
+    this.setState({
+      panning: value
+    });
+  };
+
+  getPanning = () => {
+    return this.state.panning;
+  };
 
   updateMarks = action => {
     let markBoxArray = [];
@@ -338,7 +349,12 @@ export class Home extends Component {
       <Welcome mode={this.props.mode} setPdf={this.setPdf} />
     ) : (
       <div>
-        <Navbar file={this.state.pdf} setZoom={this.setZoom} />
+        <Navbar
+          file={this.state.pdf}
+          panning={this.state.panning}
+          setPanning={this.setPanning}
+          setZoom={this.setZoom}
+        />
         <main>
           <Sidebar
             addText={this.addText}
@@ -348,7 +364,11 @@ export class Home extends Component {
             editText={this.editText}
             marks={this.state.marks}
           />
-          <div className="main-container" id="main-container">
+          <div
+            className="main-container dragscroll"
+            id="main-container"
+            style={{ cursor: this.state.panning ? 'grabbing' : 'auto' }}
+          >
             <Menu
               logURLs={this.logURLs}
               saveAsJSON={this.saveAsJSON}
@@ -358,8 +378,10 @@ export class Home extends Component {
               ? [...Array(this.state.pdf.data.numPages).keys()].map(pg => (
                   <LoadPDF
                     key={pg}
+                    setPanning={this.setPanning}
                     pg={pg + 1}
                     setCopy={this.setCopy}
+                    getPanning={this.getPanning}
                     pdf={this.state.pdf}
                     editText={this.editText}
                     paste={this.paste}
@@ -373,6 +395,8 @@ export class Home extends Component {
                   <LoadJSON
                     key={index}
                     page={index}
+                    getPanning={this.getPanning}
+                    setPanning={this.setPanning}
                     pdf={this.state.pdf}
                     setCopy={this.setCopy}
                     setFcArray={this.setFcArray}

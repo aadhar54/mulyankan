@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import ContextMenu from '../components/ContextMenu.js';
+import IsScrollingHOC from 'react-is-scrolling';
 const fabric = require('fabric').fabric;
 
 const LoadJSON = ({
@@ -10,7 +11,10 @@ const LoadJSON = ({
   editText,
   paste,
   updateMarks,
-  setCopy
+  setCopy,
+  isScrolling,
+  setPanning,
+  getPanning
 }) => {
   let fcanvas,
     mouseCoords,
@@ -18,7 +22,6 @@ const LoadJSON = ({
     undoStack = [],
     redoStack = [];
   let pg = page + 1;
-  console.log(pg);
   let json = JSON.stringify(pdf.data[page]);
   let img = pdf.data[page].objects[0];
   const undo = c => {
@@ -142,7 +145,17 @@ const LoadJSON = ({
         }
       });
 
-      fcanvas.on('mouse:down', e => {
+      fcanvas.on('mouse:move', e => {
+        if (getPanning()) {
+          console.log('mouse moved');
+          fcanvas.defaultCursor = 'grabbing';
+        } else {
+          fcanvas.defaultCursor = 'default';
+        }
+      });
+
+      fcanvas.on('mouse:up', e => {
+        if (getPanning()) return;
         setActiveCanvas(fcanvas.index);
         let pointerLocation = fcanvas.getPointer(e.e);
         mouseCoords = pointerLocation;
@@ -343,7 +356,7 @@ const LoadJSON = ({
               width: 70,
               height: 30,
               fontSize: 40,
-              fill: '#ff4757',
+              fill: '#eb2f06',
               fireRightClick: true,
               fontFamily: 'sans-serif',
               transparentCorners: false,
@@ -354,16 +367,10 @@ const LoadJSON = ({
             text.textType = 'text';
 
             text.set({
-              fill: '#ff4757',
+              fill: '#eb2f06',
               fontFamily: 'sans-serif',
               top: mouseCoords ? mouseCoords.y - text.get('height') / 2 : 0,
               left: mouseCoords ? mouseCoords.x - text.get('width') / 2 : 0
-            });
-
-            text.on('mousedown', e => {
-              if (e.button === 3) {
-                console.log('right click');
-              }
             });
 
             fcanvas.on('before:selection:cleared', obj => {
@@ -397,7 +404,7 @@ const LoadJSON = ({
               width: 30,
               height: 30,
               fontSize: 40,
-              fill: '#ff4757',
+              fill: '#eb2f06',
               fireRightClick: true,
               fontFamily: 'sans-serif',
               transparentCorners: false,
@@ -406,16 +413,10 @@ const LoadJSON = ({
             });
 
             text.set({
-              fill: '#ff4757',
+              fill: '#eb2f06',
               fontFamily: 'sans-serif',
               top: mouseCoords ? mouseCoords.y - text.get('height') / 2 : 0,
               left: mouseCoords ? mouseCoords.x - text.get('width') / 2 : 0
-            });
-
-            text.on('mousedown', e => {
-              if (e.button === 3) {
-                console.log('right click');
-              }
             });
 
             text.textType = 'mark';
@@ -473,6 +474,10 @@ const LoadJSON = ({
   };
 
   useEffect(() => {
+    setPanning(isScrolling);
+  }, [isScrolling]);
+
+  useEffect(() => {
     getPageAndRender();
   }, [pdf]);
   return (
@@ -486,4 +491,4 @@ const LoadJSON = ({
   );
 };
 
-export default LoadJSON;
+export default IsScrollingHOC(LoadJSON);

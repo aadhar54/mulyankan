@@ -6,13 +6,18 @@
     <meta name="theme-color" content="#000000" />
     <meta name="description" content="Mulyankan - Check Exam Papers Online" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <script src="build/pdf.js"></script>
-    <script src="build/pdf.worker.js"></script>
+    <script src="./build/pdf.js"></script>
+    <script src="./build/pdf.worker.js"></script>
+    <script src="./build/dragscroll.js"></script>
 
     <title>Mulyankan - Check Exam Papers Online</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="root">
+      <script>
+        window['dragscroll'] = dragscroll;
+      </script>
+    </div>
   </body>
 </html>

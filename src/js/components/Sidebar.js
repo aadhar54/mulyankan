@@ -19,18 +19,6 @@ const Sidebar = ({ title, setZoom, editText, marks }) => {
     <div className="sidebar" id="sidebar">
       <div className="divider-invisible"></div>
       <div className="sidebar-title sidebar-sub">Marking</div>
-      {/* <div className="sidebar-title sidebar-sub">Zooming</div>
-      <div className="buttons-grid">
-        <button className="btn" onClick={() => setZoom(1.1)}>
-          <i className="material-icons">add_circle_outline</i>
-        </button>
-        <button onClick={() => setZoom(0.9)}>
-          <i className="material-icons">remove_circle_outline</i>
-        </button>
-        <button onClick={() => setZoom(0.9, true)}>
-          <i className="material-icons">refresh</i>
-        </button>
-      </div> */}
       <div className="marking-grid">
         <div className="calc-marks">{marks}</div>
         <span className="marks-separator">out of</span>

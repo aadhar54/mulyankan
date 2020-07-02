@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import ContextMenu from '../components/ContextMenu.js';
+import IsScrollingHOC from 'react-is-scrolling';
 const fabric = require('fabric').fabric;
 
 const Cv = ({
@@ -10,7 +11,10 @@ const Cv = ({
   setFcArray,
   paste,
   setActiveCanvas,
-  updateMarks
+  updateMarks,
+  getPanning,
+  isScrolling,
+  setPanning
 }) => {
   let viewport,
     canvas,
@@ -117,7 +121,17 @@ const Cv = ({
       mouseCoords = pointerLocation;
     });
 
-    fc.on('mouse:down', e => {
+    fc.on('mouse:move', e => {
+      if (getPanning()) {
+        console.log('mouse moved');
+        fc.defaultCursor = 'grabbing';
+      } else {
+        fc.defaultCursor = 'default';
+      }
+    });
+
+    fc.on('mouse:up', e => {
+      if (getPanning()) return;
       setActiveCanvas(fc.index);
       let pointerLocation = fc.getPointer(e.e);
       mouseCoords = pointerLocation;
@@ -304,7 +318,7 @@ const Cv = ({
             width: 100,
             height: 30,
             fontSize: 40,
-            fill: '#ff4757',
+            fill: '#eb2f06',
             fireRightClick: true,
             fontFamily: 'sans-serif',
             transparentCorners: false,
@@ -315,16 +329,10 @@ const Cv = ({
           text.textType = 'text';
 
           text.set({
-            fill: '#ff4757',
+            fill: '#eb2f06',
             fontFamily: 'sans-serif',
             top: mouseCoords ? mouseCoords.y - text.get('height') / 2 : 0,
             left: mouseCoords ? mouseCoords.x - text.get('width') / 2 : 0
-          });
-
-          text.on('mousedown', e => {
-            if (e.button === 3) {
-              console.log('right click');
-            }
           });
 
           fcanvas.on('before:selection:cleared', obj => {
@@ -356,7 +364,7 @@ const Cv = ({
             width: 30,
             height: 30,
             fontSize: 40,
-            fill: '#ff4757',
+            fill: '#eb2f06',
             fireRightClick: true,
             fontFamily: 'sans-serif',
             transparentCorners: false,
@@ -368,7 +376,7 @@ const Cv = ({
           console.log(text);
 
           text.set({
-            fill: '#ff4757',
+            fill: '#eb2f06',
             fontFamily: 'sans-serif',
             top: mouseCoords ? mouseCoords.y - text.get('height') / 2 : 0,
             left: mouseCoords ? mouseCoords.x - text.get('width') / 2 : 0
@@ -474,6 +482,10 @@ const Cv = ({
     getPageAndRender();
   }, [pdf]);
 
+  useEffect(() => {
+    setPanning(isScrolling);
+  }, [isScrolling]);
+
   return (
     <div
       id="canvas-container"
@@ -485,4 +497,4 @@ const Cv = ({
   );
 };
 
-export default Cv;
+export default IsScrollingHOC(Cv);

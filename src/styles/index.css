@@ -109,6 +109,10 @@ div[class^='canvas-container-'] {
   background: #ccc;
 }
 
+#main-container::-webkit-scrollbar:horizontal {
+  height: 10px;
+}
+
 #main-container::-webkit-scrollbar-button {
   display: none;
 }
@@ -222,131 +226,3 @@ div[class^='canvas-container-'] {
 #check {
   display: none;
 }
-
-/*DO NOT CHANGE THE CODE ABOVE*/
-
-/*
-OLD WELCOME SCREEN CODE. HERE FOR SALVAGING.
-
-.select-pdf {
-  width: 20vw;
-  height: 60vh;
-  margin: auto 0;
-  text-align: center;
-  border-radius: 2rem;
-  background-color: rgba(220, 221, 225, 0.6);
-  position: relative;
-}
-
-.upload-pdf {
-  position: absolute;
-  top: 25%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 20rem;
-  height: 20rem;
-  font-size: 2rem;
-  color: #636e72;
-  background-color: #fff;
-  box-shadow: 0.5rem 1rem 10rem rgba(10, 0, 0, 0.2);
-  border-radius: 100rem;
-  display: inline-block;
-  cursor: pointer;
-  font-weight: bold;
-  border: solid rgba(116, 185, 255, 1) 5px;
-}
-
-.upload-pdf:active {
-  top: 25%;
-  left: 50%;
-  transform: translate(-50%, -45%);
-}
-
-.file-parent {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width: 90%;
-  transform: translate(-50%, -50%);
-}
-
-.filename-wrapper {
-  margin: 4rem auto;
-  max-width: 90%;
-}
-.filename {
-  font-size: 2rem;
-  color: #000;
-  font-weight: bold;
-}
-
-.selected-file {
-  font-weight: 100;
-}
-
-.btn-label {
-  display: -webkit-box;
-  display: flex;
-  -webkit-box-pack: center;
-  justify-content: center;
-  -webkit-box-align: center;
-  align-items: center;
-  background-color: rgba(85, 239, 196, 1);
-  border-radius: 1rem;
-  border: none;
-  cursor: pointer;
-  padding: 1rem 4rem;
-}
-.btn-text {
-  font-size: 2rem;
-  color: #fffeee;
-  font-weight: bold;
-}
-
-.text-option {
-  font-size: 2rem;
-  margin: auto auto;
-  background-color: #eee;
-}
-
-
-.download-btn {
-  width: 90%;
-  margin: 0 auto;
-}
-
-.download-btn > button {
-  color: #fff;
-  font-weight: bold;
-  padding: 1rem 2rem;
-  background-color: #74b9ff;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.download-btn > p {
-  color: #ff4757;
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-}
-
-.download-name {
-  background-color: #eee;
-  border: solid #ccc 1px;
-  border-radius: 5px;
-  padding: 1rem 2rem;
-  width: 90%;
-  font-size: 1.7rem;
-  margin-bottom: 1rem;
-}
-
-.download-info {
-  width: 90%;
-  margin: 1rem auto;
-  font-size: 1.5rem;
-  color: #6ab04c;
-  font-weight: bold;
-}
-
-*/

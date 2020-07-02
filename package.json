@@ -16,6 +16,7 @@
     "react-color": "^2.18.1",
     "react-dom": "^16.13.1",
     "react-firebase-hooks": "^2.2.0",
+    "react-is-scrolling": "^1.0.1",
     "react-lazy-load": "^3.0.13",
     "react-rangeslider": "^2.2.0",
     "react-router-dom": "^5.2.0",

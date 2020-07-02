@@ -49,7 +49,31 @@
 .navbar__zooming {
   position: absolute;
   top: 50%;
-  width: 30rem;
+  width: 35rem;
   left: 41%;
   transform: translate(-50%, -30%);
+}
+
+.nav-buttons-grid {
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-buttons-grid > button {
+  padding: 1rem 2rem;
+  font-size: 2rem;
+  margin: 2px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.nav-vertical-divider {
+  width: 2rem;
+}
+
+.panning-btn-active {
+  background-color: #ccc;
 }
