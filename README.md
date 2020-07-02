@@ -15,7 +15,7 @@ You can simply go to <a href="https://mulyankan.netlify.app">this link</a>, uplo
   
 In fact, if you want to use it witout an internet connection, you can download Mulyankan Desktop for Windows, Mac and Linux below:
 
-- Windows: https://github.com/skadewdle/mulyankan/raw/desktop/installers/Mulyankan%20Desktop%20-%20Windows.exe 
+- Windows: https://github.com/skadewdle/mulyankan/releases/download/v1.3.0/mulyankan-desktop-setup-1.3.0.exe
 - Mac: *Coming Soon*
 - Linux: *Coming Soon* 
   
